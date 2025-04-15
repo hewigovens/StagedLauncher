@@ -31,12 +31,12 @@ struct ManagedAppCell: View {
             .labelsHidden() // Optionally hide the "Delay" label if space is tight
             .frame(width: 80) // Give the picker a fixed width
             // Save when delay changes
-            .onChange(of: app.delaySeconds) { _ in appStore.saveApps() }
+            .onChange(of: app.delaySeconds) { appStore.saveApps() }
 
             Toggle("Enabled", isOn: $app.isEnabled)
                 .labelsHidden()
                 // Save when toggle changes
-                .onChange(of: app.isEnabled) { _ in appStore.saveApps() }
+                .onChange(of: app.isEnabled) { appStore.saveApps() }
 
             Button {
                 viewModel.removeApp(id: app.id)
