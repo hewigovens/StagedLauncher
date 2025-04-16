@@ -11,7 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         Logger.info("AppDelegate: Application finished launching.")
         // Start the launch manager once the app is ready
         launchManager?.startMonitoring()
-        
+
         // Setup the menu bar icon manager (now handles initial activation policy)
         MenuBarManager.shared.setupMenuBar()
     }
@@ -24,5 +24,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
+    }
+
+    // --- Dock Menu --- 
+    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+        let menu = NSMenu()
+        let toggleItem = NSMenuItem(title: "Switch to Menu Bar Only",
+                                    action: #selector(MenuBarManager.toggleMenuBarPreference),
+                                    keyEquivalent: "")
+        toggleItem.target = MenuBarManager.shared
+        menu.addItem(toggleItem)
+        return menu
     }
 }

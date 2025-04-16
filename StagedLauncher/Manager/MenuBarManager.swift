@@ -35,8 +35,8 @@ class MenuBarManager: NSObject {
                     self.removeMenuBarIcon()
                 } else {}
                 // Activate app window only when switching to regular mode
-                NSApp.activate(ignoringOtherApps: true)
                 if let window = NSApp.windows.first(where: { $0.canBecomeMain }) {
+                    NSApplication.shared.activate(ignoringOtherApps: true)
                     window.makeKeyAndOrderFront(nil)
                 }
             }
