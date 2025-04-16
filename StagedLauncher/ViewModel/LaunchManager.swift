@@ -38,18 +38,18 @@ class LaunchManager: ObservableObject {
         cancellables.removeAll()
         invalidateAllTimers()
     }
-    
+
     /// Schedules a launch for a single app based on its current settings.
     func scheduleLaunch(for app: ManagedApp) {
         // Invalidate any existing timer for this app first
         invalidateTimer(for: app.id)
-        
+
         // Only schedule if the app is enabled
         guard app.isEnabled else {
             Logger.info("Launch Manager: Skipping launch for disabled app: \(app.name)")
             return
         }
-        
+
         // Launch immediately if delay is 0
         guard app.delaySeconds > 0 else {
             Logger.info("Launch Manager: Launching immediately (0 delay) for app: \(app.name)")
@@ -58,15 +58,16 @@ class LaunchManager: ObservableObject {
             }
             return
         }
-        
+
         Logger.info("Launch Manager: Scheduling launch for \(app.name) in \(app.delaySeconds) seconds.")
-        
+
         // Create and store the timer
         let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(app.delaySeconds), repeats: false) { [weak self] _ in
             Logger.info("Launch Manager: Timer fired for \(app.name).")
-            self?.launchApp(app)
-            // Remove timer after firing (important!)
-            self?.launchTimers.removeValue(forKey: app.id)
+            Task {
+                await self?.launchApp(app)
+                self?.launchTimers.removeValue(forKey: app.id)
+            }
         }
         launchTimers[app.id] = timer
     }
@@ -79,7 +80,7 @@ class LaunchManager: ObservableObject {
             scheduleLaunch(for: app)
         }
     }
-    
+
     /// Called automatically via bindings when an app's settings change.
     private func appSettingsChanged(appId: UUID) {
         guard let app = appStore.managedApps.first(where: { $0.id == appId }) else { return }
@@ -89,19 +90,19 @@ class LaunchManager: ObservableObject {
     }
 
     // MARK: - Private Helpers
-    
+
     @MainActor // Ensure this runs on the main thread due to showError call
     private func launchApp(_ app: ManagedApp) {
         // Check if the app is already running
         let isRunning = NSWorkspace.shared.runningApplications.contains { runningApp in
             runningApp.bundleIdentifier == app.bundleIdentifier
         }
-        
+
         guard !isRunning else {
             Logger.info("Launch Manager: Skipping launch for \(app.name) because it is already running.")
             return
         }
-        
+
         guard let bookmarkData = app.bookmarkData else {
             let errorMessage = "Launch Manager: Error - No bookmark data found for \(app.name). Cannot launch."
             Logger.error(errorMessage)
@@ -149,7 +150,7 @@ class LaunchManager: ObservableObject {
             existingTimer.invalidate()
         }
     }
-    
+
     /// Invalidates and removes all active launch timers.
     private func invalidateAllTimers() {
         Logger.info("Launch Manager: Invalidating all \(launchTimers.count) launch timers.")
@@ -176,7 +177,7 @@ class LaunchManager: ObservableObject {
         // Given ManagedApp is a struct, observing the whole array is simpler for now,
         // although potentially less efficient if only one app changes.
         // The debounce above helps mitigate frequent rescheduling.
-        
+
         // Alternative (more complex with structs): If performance becomes an issue,
         // you'd need to manage individual subscriptions to each app's changes,
         // possibly by having AppStore vend publishers for individual app updates.
