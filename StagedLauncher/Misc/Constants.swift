@@ -11,4 +11,7 @@ enum Constants {
     static let sessionLoginItemsKey = "com.apple.LSSharedFileList.SessionLoginItems" as CFString
 
     static let selfBundleId = "dev.hewig.StagedLauncher"
+
+    /// The display string for the category representing all applications.
+    static let categoryAllApps = "All Apps"
 }

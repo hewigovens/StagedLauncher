@@ -21,31 +21,43 @@ struct ContentView: View {
             // Use the extracted CategoryListView for the sidebar
             CategoryListView(viewModel: viewModel)
         } detail: {
-            // --- Detail: Filtered App List ---
-            // Add selection binding to the List
-            List(selection: $selectedAppId) {
-                // Wrap ForEach in a Group and apply .id to the Group
-                Group {
-                    ForEach(viewModel.filteredApps.indices, id: \.self) { index in
-                        let app = viewModel.filteredApps[index]
-                        // Find the binding for the specific app in the original AppStore array
-                        if let originalIndex = appStore.managedApps.firstIndex(where: { $0.id == app.id }) {
-                            ManagedAppCell(
-                                app: $appStore.managedApps[originalIndex],
-                                viewModel: viewModel,
-                                appStore: appStore,
-                                index: index
-                            )
-                            // Tag the row with the app's ID for selection
-                            .tag(app.id)
+            // Wrap content in a VStack to hold either List or Placeholder
+            VStack {
+                if viewModel.filteredApps.isEmpty {
+                    Spacer()
+                    Text("Tap the ‘+’ in the top-right corner to add your first app!")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                        .padding(.top, -10)
+                    Spacer()
+                } else {
+                    // --- Detail: Filtered App List ---
+                    // Add selection binding to the List
+                    List(selection: $selectedAppId) {
+                        // Wrap ForEach in a Group and apply .id to the Group
+                        Group {
+                            ForEach(viewModel.filteredApps.indices, id: \.self) { index in
+                                let app = viewModel.filteredApps[index]
+                                // Find the binding for the specific app in the original AppStore array
+                                if let originalIndex = appStore.managedApps.firstIndex(where: { $0.id == app.id }) {
+                                    ManagedAppCell(
+                                        app: $appStore.managedApps[originalIndex],
+                                        viewModel: viewModel,
+                                        appStore: appStore,
+                                        index: index
+                                    )
+                                    // Tag the row with the app's ID for selection
+                                    .tag(app.id)
+                                }
+                            }
+                            .onDelete(perform: viewModel.removeFilteredApps) // Need a new method for deleting from filtered list
                         }
+                        .id(viewModel.selectedCategory) // Apply ID to the Group
                     }
-                    .onDelete(perform: viewModel.removeFilteredApps) // Need a new method for deleting from filtered list
+                    // Add translucent background material (apply only when list is shown)
+                    .background(.ultraThinMaterial)
                 }
-                .id(viewModel.selectedCategory) // Apply ID to the Group
             }
-            // Add translucent background material
-            .background(.ultraThinMaterial)
             // Use the formatted category name for the title
             .navigationTitle(viewModel.formatCategoryName(viewModel.selectedCategory ?? "All Apps"))
             .toolbar {

@@ -1,10 +1,9 @@
-import AppKit // Import AppKit for NSOpenPanel
+import AppKit
 import Foundation
 import SwiftUI
 
 @MainActor
 class ContentViewModel: ObservableObject {
-    // Re-adding @Published to help ensure view updates when AppStore's published properties change.
     @Published var appStore: AppStore
     @Published var showingAlert = false
     @Published var alertMessage = ""
@@ -13,14 +12,14 @@ class ContentViewModel: ObservableObject {
     @Published var selectedCategory: String? = nil // Initially show all
 
     var categories: [String] {
-        // Get unique categories, sort them, and add "All" at the beginning
+        // Get unique categories, sort them, and add "All Apps" at the beginning
         let uniqueCategories = Set(appStore.managedApps.map { $0.category })
-        return ["All"] + uniqueCategories.sorted()
+        return [Constants.categoryAllApps] + uniqueCategories.sorted()
     }
 
     var filteredApps: [ManagedApp] {
-        guard let category = selectedCategory, category != "All" else {
-            return appStore.managedApps // Return all if nil or "All"
+        guard let category = selectedCategory, category != Constants.categoryAllApps else {
+            return appStore.managedApps // Return all if nil or "All Apps"
         }
         return appStore.managedApps.filter { $0.category == category }
     }
@@ -29,7 +28,7 @@ class ContentViewModel: ObservableObject {
 
     // --- Category Formatting ---
     func formatCategoryName(_ rawCategory: String) -> String {
-        if rawCategory == "All" || rawCategory == "Other" {
+        if rawCategory == Constants.categoryAllApps || rawCategory == "Other" {
             return rawCategory
         }
 
