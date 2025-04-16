@@ -28,7 +28,7 @@ class ContentViewModel: ObservableObject {
 
     // --- Category Formatting ---
     func formatCategoryName(_ rawCategory: String) -> String {
-        if rawCategory == Constants.categoryAllApps || rawCategory == "Other" {
+        if rawCategory == Constants.categoryAllApps || rawCategory == Constants.categoryOther {
             return rawCategory
         }
 
@@ -105,8 +105,8 @@ class ContentViewModel: ObservableObject {
         }
 
         // --- Read Category ---
-        let category = bundle.object(forInfoDictionaryKey: "LSApplicationCategoryType") as? String ?? "Other"
-        let finalCategory = category.isEmpty ? "Other" : category
+        let category = bundle.object(forInfoDictionaryKey: "LSApplicationCategoryType") as? String ?? Constants.categoryOther
+        let finalCategory = category.isEmpty ? Constants.categoryOther : category
         // --- End Read Category ---
 
         // Create bookmark data

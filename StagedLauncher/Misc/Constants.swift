@@ -14,4 +14,6 @@ enum Constants {
 
     /// The display string for the category representing all applications.
     static let categoryAllApps = "All Apps"
+
+    static let categoryOther = "Other"
 }
