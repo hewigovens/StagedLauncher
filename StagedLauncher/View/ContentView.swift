@@ -30,12 +30,14 @@ struct ContentView: View {
                         let app = viewModel.filteredApps[index]
                         // Find the binding for the specific app in the original AppStore array
                         if let originalIndex = appStore.managedApps.firstIndex(where: { $0.id == app.id }) {
-                            ManagedAppCell(app: $appStore.managedApps[originalIndex],
-                                           viewModel: viewModel,
-                                           appStore: appStore,
-                                           index: index)
-                                // Tag the row with the app's ID for selection
-                                .tag(app.id)
+                            ManagedAppCell(
+                                app: $appStore.managedApps[originalIndex],
+                                viewModel: viewModel,
+                                appStore: appStore,
+                                index: index
+                            )
+                            // Tag the row with the app's ID for selection
+                            .tag(app.id)
                         }
                     }
                     .onDelete(perform: viewModel.removeFilteredApps) // Need a new method for deleting from filtered list
@@ -51,7 +53,7 @@ struct ContentView: View {
                     Button {
                         viewModel.presentOpenPanel()
                     } label: {
-                        Label("Add App", systemImage: "plus")
+                        Label("Add App", systemImage: "plus.app")
                     }
                 }
                 // Toolbar button to show running apps sheet
@@ -59,13 +61,13 @@ struct ContentView: View {
                     Button {
                         showingRunningAppsSheet = true
                     } label: {
-                        Label("Add Application from Running", systemImage: "plus.rectangle.on.rectangle")
+                        Label("Add Application from Running", systemImage: "iphone.app.switcher")
                     }
                 }
                 // Toolbar item using SettingsLink
                 ToolbarItem(placement: .primaryAction) {
                     SettingsLink {
-                        Label("Settings", systemImage: "gearshape.fill")
+                        Label("Settings", systemImage: "gear")
                     }
                 }
             }
