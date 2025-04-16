@@ -22,6 +22,7 @@ struct StagedLauncherApp: App {
         WindowGroup {
             ContentView(appStore: appStore)
                 .environmentObject(launchManager)
+                .frame(minWidth: 500, minHeight: 300) // Adjust size as needed
         }
         Settings {
             SettingsView()
