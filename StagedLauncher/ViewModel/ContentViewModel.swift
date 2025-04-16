@@ -3,7 +3,7 @@ import Foundation
 import SwiftUI
 
 @MainActor
-class ContentViewModel: ObservableObject {
+class ContentViewModel: ObservableObject, ErrorPresentable {
     @Published var appStore: AppStore
     @Published var showingAlert = false
     @Published var alertMessage = ""
@@ -141,7 +141,7 @@ class ContentViewModel: ObservableObject {
     /// - Returns: `true` if the app is found in login items, `false` otherwise.
     func isLoginItem(app: ManagedApp) -> Bool {
         guard let data = app.bookmarkData else {
-            print("Warning: No bookmark data for app \(app.name) to check login item status.")
+            Logger.warning("No bookmark data for app \(app.name) to check login item status.")
             return false // Cannot determine without bookmark
         }
 
@@ -150,12 +150,12 @@ class ContentViewModel: ObservableObject {
             let appURL = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
 
             if isStale {
-                print("Warning: Stale bookmark data for \(appURL.lastPathComponent) when checking login items.")
+                Logger.warning("Stale bookmark data for \(appURL.lastPathComponent) when checking login items.")
                 // Optionally attempt to refresh the bookmark here if needed
             }
 
             guard appURL.startAccessingSecurityScopedResource() else {
-                print("Error: Could not access security scoped resource for \(appURL.lastPathComponent) when checking login items.")
+                Logger.error("Could not access security scoped resource for \(appURL.lastPathComponent) when checking login items.")
                 return false // Cannot determine access
             }
             defer { appURL.stopAccessingSecurityScopedResource() } // Ensure we stop accessing
@@ -167,7 +167,7 @@ class ContentViewModel: ObservableObject {
             return loginItemURLs.contains { $0.path == appPath }
 
         } catch {
-            print("Error resolving bookmark data for \(app.name) when checking login items: \(error.localizedDescription)")
+            Logger.error("Error resolving bookmark data for \(app.name) when checking login items: \(error.localizedDescription)")
             return false // Error resolving, assume not a login item
         }
     }
@@ -188,12 +188,12 @@ class ContentViewModel: ObservableObject {
             // Handle stale bookmark data if necessary
             if isStale {
                 // Optionally try to refresh the bookmark here
-                print("Warning: Bookmark data is stale for \(url.lastPathComponent)")
+                Logger.warning("Bookmark data is stale for \(url.lastPathComponent)")
             }
 
             // Important: Access the security-scoped resource
             guard url.startAccessingSecurityScopedResource() else {
-                print("Error: Could not access security scoped resource for \(url.lastPathComponent)")
+                Logger.error("Could not access security scoped resource for \(url.lastPathComponent)")
                 return NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Access Denied") ?? NSImage()
             }
 
@@ -205,7 +205,7 @@ class ContentViewModel: ObservableObject {
 
             return icon
         } catch {
-            print("Error resolving bookmark data: \(error.localizedDescription)")
+            Logger.error("Error resolving bookmark data: \(error.localizedDescription)")
             return NSImage(systemSymbolName: "exclamationmark.arrow.triangle.2.circlepath", accessibilityDescription: "Resolution Failed") ?? NSImage()
         }
     }
@@ -215,6 +215,6 @@ class ContentViewModel: ObservableObject {
     func showError(message: String) {
         alertMessage = message
         showingAlert = true
-        print("Error: \(message)") // Also log to console
+        Logger.error(message) // Use Logger instead of print
     }
 }

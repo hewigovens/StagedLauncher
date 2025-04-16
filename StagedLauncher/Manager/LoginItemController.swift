@@ -18,17 +18,17 @@ class LoginItemController: ObservableObject {
             do {
                 if service.status == .enabled {
                     try service.unregister()
-                    print("Login item disabled successfully.")
+                    Logger.info("Login item disabled successfully.")
                 } else {
                     try service.register()
-                    print("Login item enabled successfully.")
+                    Logger.info("Login item enabled successfully.")
                 }
                 // Update state on the main thread after completion
                 DispatchQueue.main.async {
                     self.launchAtLoginEnabled = self.service.status == .enabled
                 }
             } catch {
-                print("Failed to update login item: \(error.localizedDescription)")
+                Logger.error("Failed to update login item: \(error.localizedDescription)")
                 // Revert the state on the main thread after error
                 DispatchQueue.main.async {
                     self.launchAtLoginEnabled = self.service.status == .enabled

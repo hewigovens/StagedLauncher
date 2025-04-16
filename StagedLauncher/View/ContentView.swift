@@ -1,18 +1,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    // Directly observe the AppStore for list data changes
+    // Observe the AppStore passed from StagedLauncherApp
     @ObservedObject var appStore: AppStore
-    // ViewModel now also manages filtering state
-    @StateObject private var viewModel: ContentViewModel
+    // ViewModel is now passed in and observed
+    @ObservedObject var viewModel: ContentViewModel
     // State to control the running apps sheet presentation
     @State private var showingRunningAppsSheet = false
     // State to track the selected app in the detail list
     @State private var selectedAppId: ManagedApp.ID? = nil
 
-    init(appStore: AppStore) {
+    // Updated initializer to accept both AppStore and ContentViewModel
+    init(appStore: AppStore, viewModel: ContentViewModel) {
         self.appStore = appStore
-        _viewModel = StateObject(wrappedValue: ContentViewModel(appStore: appStore))
+        self.viewModel = viewModel
     }
 
     var body: some View {
@@ -97,6 +98,9 @@ struct ContentView: View {
 // Updated Preview Provider
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(appStore: AppStore())
+        // Create dummy store and view model for preview
+        let previewAppStore = AppStore()
+        let previewViewModel = ContentViewModel(appStore: previewAppStore)
+        ContentView(appStore: previewAppStore, viewModel: previewViewModel)
     }
 }

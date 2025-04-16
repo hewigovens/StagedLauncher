@@ -4,11 +4,14 @@ import SwiftUI
 
 class LaunchManager: ObservableObject {
     private let appStore: AppStore
+    private weak var errorHandler: ErrorPresentable?
     private var cancellables = Set<AnyCancellable>()
     private var launchTimers: [UUID: Timer] = [:] // To manage individual app launch timers
 
-    init(appStore: AppStore) {
+    // Updated initializer to accept ErrorHandler
+    init(appStore: AppStore, errorHandler: ErrorPresentable?) {
         self.appStore = appStore
+        self.errorHandler = errorHandler
         // Observe changes to individual app settings (isEnabled, delaySeconds)
         // to automatically reschedule launches.
         setupBindings()
@@ -23,13 +26,16 @@ class LaunchManager: ObservableObject {
 
     /// Call this when the app starts or when you want launching to begin.
     func startMonitoring() {
-        print("Launch Manager: Starting monitoring and scheduling initial launches.")
+        Logger.info("Launch Manager: Starting monitoring and scheduling initial launches.")
         scheduleLaunchesForAllEnabledApps()
+        setupAppStoreSubscription()
     }
 
     /// Call this when the app quits or when launching should stop.
     func stopMonitoring() {
-        print("Launch Manager: Stopping monitoring and invalidating all timers.")
+        Logger.info("Launch Manager: Stopping monitoring and invalidating all timers.")
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
         invalidateAllTimers()
     }
     
@@ -40,22 +46,24 @@ class LaunchManager: ObservableObject {
         
         // Only schedule if the app is enabled
         guard app.isEnabled else {
-            print("Launch Manager: Skipping launch for disabled app: \(app.name)")
+            Logger.info("Launch Manager: Skipping launch for disabled app: \(app.name)")
             return
         }
         
         // Launch immediately if delay is 0
         guard app.delaySeconds > 0 else {
-            print("Launch Manager: Launching immediately (0 delay) for app: \(app.name)")
-            launchApp(app)
+            Logger.info("Launch Manager: Launching immediately (0 delay) for app: \(app.name)")
+            Task {
+                await launchApp(app)
+            }
             return
         }
         
-        print("Launch Manager: Scheduling launch for \(app.name) in \(app.delaySeconds) seconds.")
+        Logger.info("Launch Manager: Scheduling launch for \(app.name) in \(app.delaySeconds) seconds.")
         
         // Create and store the timer
         let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(app.delaySeconds), repeats: false) { [weak self] _ in
-            print("Launch Manager: Timer fired for \(app.name).")
+            Logger.info("Launch Manager: Timer fired for \(app.name).")
             self?.launchApp(app)
             // Remove timer after firing (important!)
             self?.launchTimers.removeValue(forKey: app.id)
@@ -65,8 +73,8 @@ class LaunchManager: ObservableObject {
 
     /// Schedules launches for all apps currently marked as enabled in the AppStore.
     func scheduleLaunchesForAllEnabledApps() {
+        Logger.info("Launch Manager: Scheduling launches for all enabled apps.")
         invalidateAllTimers() // Clear existing timers before rescheduling all
-        print("Launch Manager: Scheduling launches for all enabled apps.")
         for app in appStore.managedApps where app.isEnabled {
             scheduleLaunch(for: app)
         }
@@ -75,13 +83,14 @@ class LaunchManager: ObservableObject {
     /// Called automatically via bindings when an app's settings change.
     private func appSettingsChanged(appId: UUID) {
         guard let app = appStore.managedApps.first(where: { $0.id == appId }) else { return }
-        print("Launch Manager: Settings changed detected for \(app.name). Rescheduling launch.")
+        Logger.info("Launch Manager: Settings changed detected for \(app.name). Rescheduling launch.")
         // Reschedule the specific app with its new settings
         scheduleLaunch(for: app)
     }
 
     // MARK: - Private Helpers
     
+    @MainActor // Ensure this runs on the main thread due to showError call
     private func launchApp(_ app: ManagedApp) {
         // Check if the app is already running
         let isRunning = NSWorkspace.shared.runningApplications.contains { runningApp in
@@ -89,48 +98,61 @@ class LaunchManager: ObservableObject {
         }
         
         guard !isRunning else {
-            print("Launch Manager: Skipping launch for \(app.name) because it is already running.")
+            Logger.info("Launch Manager: Skipping launch for \(app.name) because it is already running.")
             return
         }
         
-        guard let url = app.resolvedURL else {
-            print("Launch Manager: Error - Could not resolve secure URL for \(app.name). Bookmark data might be stale or invalid.")
-            // TODO: Consider notifying the user or marking the app as problematic
+        guard let bookmarkData = app.bookmarkData else {
+            let errorMessage = "Launch Manager: Error - No bookmark data found for \(app.name). Cannot launch."
+            Logger.error(errorMessage)
+            errorHandler?.showError(message: errorMessage) // Use errorHandler
             return
         }
-        
-        print("Launch Manager: Attempting to launch \(app.name) at URL: \(url.path)")
-        
-        let configuration = NSWorkspace.OpenConfiguration()
-        // Set activates to false to launch in the background
-        configuration.activates = false
-        
-        NSWorkspace.shared.openApplication(at: url, configuration: configuration) { runningApp, error in
-            // Stop accessing the security-scoped resource as soon as possible
-            url.stopAccessingSecurityScopedResource()
-            
-            DispatchQueue.main.async { // Ensure UI updates (if any) are on main thread
-                if let error = error {
-                    print("Launch Manager: Error launching \(app.name): \(error.localizedDescription)")
-                    // TODO: Show user alert?
-                } else {
-                    print("Launch Manager: Successfully launched \(app.name). Process ID: \(runningApp?.processIdentifier ?? 0)")
+
+        do {
+            var isStale = false
+            let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+
+            guard url.startAccessingSecurityScopedResource() else {
+                let errorMessage = "Launch Manager: Error - Could not resolve secure URL for \(app.name). Bookmark data might be stale or invalid."
+                Logger.error(errorMessage)
+                errorHandler?.showError(message: errorMessage) // Use errorHandler
+                return
+            }
+            defer { url.stopAccessingSecurityScopedResource() }
+
+            Logger.info("Launch Manager: Attempting to launch \(app.name) at URL: \(url.path)")
+            let configuration = NSWorkspace.OpenConfiguration()
+
+            NSWorkspace.shared.openApplication(at: url, configuration: configuration) { runningApp, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        let errorMessage = "Launch Manager: Error launching \(app.name): \(error.localizedDescription)"
+                        Logger.error(errorMessage)
+                        self.errorHandler?.showError(message: errorMessage) // Use errorHandler
+                    } else {
+                        Logger.info("Launch Manager: Successfully launched \(app.name). Process ID: \(runningApp?.processIdentifier ?? 0)")
+                    }
                 }
             }
+        } catch {
+            let errorMessage = "Launch Manager: Error resolving bookmark data or launching \(app.name): \(error.localizedDescription)"
+            Logger.error(errorMessage)
+            errorHandler?.showError(message: errorMessage) // Use errorHandler
         }
     }
 
     /// Invalidates and removes the timer for a specific app ID.
     private func invalidateTimer(for id: UUID) {
         if let existingTimer = launchTimers.removeValue(forKey: id) { // Removes and returns value
-            print("Launch Manager: Invalidating existing timer for app ID \(id).")
+            Logger.info("Launch Manager: Invalidating existing timer for app ID \(id).")
             existingTimer.invalidate()
         }
     }
     
     /// Invalidates and removes all active launch timers.
     private func invalidateAllTimers() {
-        print("Launch Manager: Invalidating all \(launchTimers.count) launch timers.")
+        Logger.info("Launch Manager: Invalidating all \(launchTimers.count) launch timers.")
         for timer in launchTimers.values {
             timer.invalidate()
         }
@@ -143,7 +165,7 @@ class LaunchManager: ObservableObject {
         appStore.$managedApps
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main) // Debounce to avoid rapid updates
             .sink { [weak self] _ in
-                print("Launch Manager: App list changed, rescheduling all.")
+                Logger.info("Launch Manager: App list changed, rescheduling all.")
                 self?.scheduleLaunchesForAllEnabledApps()
             }
             .store(in: &cancellables)
@@ -159,4 +181,16 @@ class LaunchManager: ObservableObject {
         // you'd need to manage individual subscriptions to each app's changes,
         // possibly by having AppStore vend publishers for individual app updates.
     }
+
+    private func setupAppStoreSubscription() {
+        appStore.$managedApps
+            .dropFirst() // Ignore the initial value
+            .sink { [weak self] _ in
+                Logger.info("Launch Manager: App list changed, rescheduling all.")
+                self?.scheduleLaunchesForAllEnabledApps()
+            }
+            .store(in: &cancellables)
+    }
 }
+
+// Helper extension to check if an NSRunningApplication corresponds to our managed app

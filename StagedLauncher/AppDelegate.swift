@@ -8,7 +8,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     var launchManager: LaunchManager?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        print("AppDelegate: Application finished launching.")
+        Logger.info("AppDelegate: Application finished launching.")
         // Start the launch manager once the app is ready
         launchManager?.startMonitoring()
         
@@ -17,8 +17,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        print("AppDelegate: Application will terminate.")
+        Logger.info("AppDelegate: Application will terminate.")
         // Clean up timers when the app quits
         launchManager?.stopMonitoring()
+    }
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        return true
     }
 }

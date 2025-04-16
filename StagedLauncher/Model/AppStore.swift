@@ -13,26 +13,27 @@ class AppStore: ObservableObject {
     // MARK: - Persistence
 
     func saveApps() {
-        if let encoded = try? JSONEncoder().encode(managedApps) {
-            UserDefaults.standard.set(encoded, forKey: Constants.managedAppsUserDefaultsKey)
-            print("Apps saved to UserDefaults.")
-        } else {
-            print("Error: Failed to encode apps for saving.")
+        do {
+            let data = try JSONEncoder().encode(managedApps)
+            UserDefaults.standard.set(data, forKey: Constants.managedAppsUserDefaultsKey)
+            Logger.info("Apps saved to UserDefaults.")
+        } catch {
+            Logger.error("Failed to encode apps for saving.")
         }
     }
 
-    func loadApps() {
-        if let savedApps = UserDefaults.standard.data(forKey: Constants.managedAppsUserDefaultsKey) {
-            if let decodedApps = try? JSONDecoder().decode([ManagedApp].self, from: savedApps) {
-                managedApps = decodedApps
-                print("Apps loaded from UserDefaults.")
-                return
-            }
-            print("Error: Failed to decode saved apps.")
+    private func loadApps() {
+        guard let data = UserDefaults.standard.data(forKey: Constants.managedAppsUserDefaultsKey) else {
+            Logger.info("No saved apps found, initializing empty list.")
+            return
         }
-        // Initialize with empty or default if nothing saved/error decoding
-        managedApps = []
-        print("No saved apps found or error decoding, initializing empty list.")
+        do {
+            managedApps = try JSONDecoder().decode([ManagedApp].self, from: data)
+            Logger.info("Apps loaded from UserDefaults.")
+        } catch {
+            Logger.error("Failed to decode saved apps.")
+            managedApps = [] // Initialize empty on decode failure
+        }
     }
 
     // MARK: - App Management (Basic stubs for now)
