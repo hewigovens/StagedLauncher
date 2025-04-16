@@ -11,6 +11,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         print("AppDelegate: Application finished launching.")
         // Start the launch manager once the app is ready
         launchManager?.startMonitoring()
+        
+        // Setup the menu bar icon manager (now handles initial activation policy)
+        MenuBarManager.shared.setupMenuBar()
     }
 
     func applicationWillTerminate(_ notification: Notification) {

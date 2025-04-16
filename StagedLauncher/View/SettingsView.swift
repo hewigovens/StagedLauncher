@@ -1,23 +1,47 @@
 import SwiftUI
 
+// Define a key for AppStorage/UserDefaults
+private let showMenuBarIconKey = "showMenuBarIcon"
+
 struct SettingsView: View {
+    // Use AppStorage to bind the UI toggle state to UserDefaults
+    // The source of truth for the actual menu bar state is now handled explicitly
+    @AppStorage(showMenuBarIconKey) private var showMenuBarIcon: Bool = UserDefaults.standard.bool(forKey: showMenuBarIconKey) // Initialize from UserDefaults
+
     // Controller for managing login item status
     @StateObject private var loginItemController = LoginItemController()
 
+
     var body: some View {
-        // Use a Form for standard settings layout
+        // Using Form for standard settings layout
         Form {
+            // Launch at Login Toggle
             Toggle("Launch at login", isOn: $loginItemController.launchAtLoginEnabled)
                 .onChange(of: loginItemController.launchAtLoginEnabled) {
                     loginItemController.toggleLaunchAtLogin()
                 }
+                .toggleStyle(.switch)
+
+            // Menu Bar Icon Toggle
+            Toggle("Show Menu Bar Icon", isOn: $showMenuBarIcon)
+                .toggleStyle(.switch) // Use switch style for clarity
+                .onChange(of: showMenuBarIcon) { _, newValue in
+                    // AppStorage handles saving the value to UserDefaults automatically.
+                    print("Settings Toggle changed to: \(newValue). Notifying MenuBarManager.")
+                    // Explicitly tell the manager to update based on the new value
+                    MenuBarManager.shared.setMenuBarVisibility(show: newValue)
+                }
         }
         .padding()
-        // Add a fixed frame, common for settings windows
-        .frame(width: 350, height: 100)
+        .frame(width: 300, height: 120) // Give the settings window a fixed size
     }
 }
 
-#Preview {
-    SettingsView()
+// Preview Provider
+struct SettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        // Ensure a default value exists for preview if needed
+         UserDefaults.standard.register(defaults: [showMenuBarIconKey : true])
+        return SettingsView()
+    }
 }
