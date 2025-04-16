@@ -6,8 +6,6 @@ import SwiftUI
 class AppStore: ObservableObject {
     @Published var managedApps: [ManagedApp] = []
 
-    private let userDefaultsKey = "managedApps"
-
     init() {
         loadApps()
     }
@@ -16,7 +14,7 @@ class AppStore: ObservableObject {
 
     func saveApps() {
         if let encoded = try? JSONEncoder().encode(managedApps) {
-            UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
+            UserDefaults.standard.set(encoded, forKey: Constants.managedAppsUserDefaultsKey)
             print("Apps saved to UserDefaults.")
         } else {
             print("Error: Failed to encode apps for saving.")
@@ -24,7 +22,7 @@ class AppStore: ObservableObject {
     }
 
     func loadApps() {
-        if let savedApps = UserDefaults.standard.data(forKey: userDefaultsKey) {
+        if let savedApps = UserDefaults.standard.data(forKey: Constants.managedAppsUserDefaultsKey) {
             if let decodedApps = try? JSONDecoder().decode([ManagedApp].self, from: savedApps) {
                 managedApps = decodedApps
                 print("Apps loaded from UserDefaults.")

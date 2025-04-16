@@ -1,8 +1,6 @@
 import AppKit
 import SwiftUI
 
-private let showMenuBarIconKey = "showMenuBarIcon"
-
 class MenuBarManager: NSObject {
     static let shared = MenuBarManager()
 
@@ -14,7 +12,7 @@ class MenuBarManager: NSObject {
     // Called once on app startup
     func setupMenuBar() {
         // Read the initial setting directly from UserDefaults
-        let initialSetting = UserDefaults.standard.bool(forKey: showMenuBarIconKey)
+        let initialSetting = UserDefaults.standard.bool(forKey: Constants.showMenuBarIconKey)
         // Apply the initial state
         updateMenuBarIconVisibility(shouldShow: initialSetting)
     }
@@ -64,7 +62,8 @@ class MenuBarManager: NSObject {
         }
 
         // Use dedicated menu bar icon asset
-        if let icon = NSImage(named: "MenuBarIcon") {
+        if let icon = NSImage(systemSymbolName: "rectangle.stack", accessibilityDescription: nil) {
+            icon.size = NSSize(width: 18, height: 18)
             icon.isTemplate = true
             button.image = icon
         } else {
@@ -103,13 +102,13 @@ class MenuBarManager: NSObject {
     // Action for the toggle menu item
     @objc func toggleMenuBarPreference() {
         // 1. Read the current setting from UserDefaults
-        let currentSetting = UserDefaults.standard.bool(forKey: showMenuBarIconKey)
+        let currentSetting = UserDefaults.standard.bool(forKey: Constants.showMenuBarIconKey)
 
         // 2. Determine the new setting
         let newSetting = !currentSetting
 
         // 3. Save the new setting back to UserDefaults
-        UserDefaults.standard.set(newSetting, forKey: showMenuBarIconKey)
+        UserDefaults.standard.set(newSetting, forKey: Constants.showMenuBarIconKey)
 
         // 4. Update the UI based on the new setting
         updateMenuBarIconVisibility(shouldShow: newSetting)
@@ -122,10 +121,5 @@ class MenuBarManager: NSObject {
         }
     }
 
-    @objc func statusBarButtonClicked(sender: NSStatusBarButton) {
-        // Default behavior: show the menu.
-        // If statusItem.menu is set, this might not be needed,
-        // but can be used for custom left-click actions if menu is nil.
-        statusItem?.popUpMenu(statusItem!.menu!)
-    }
+    @objc func statusBarButtonClicked(sender: NSStatusBarButton) {}
 }

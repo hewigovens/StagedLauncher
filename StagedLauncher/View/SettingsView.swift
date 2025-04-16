@@ -1,12 +1,9 @@
 import SwiftUI
 
-// Define a key for AppStorage/UserDefaults
-private let showMenuBarIconKey = "showMenuBarIcon"
-
 struct SettingsView: View {
     // Use AppStorage to bind the UI toggle state to UserDefaults
     // The source of truth for the actual menu bar state is now handled explicitly
-    @AppStorage(showMenuBarIconKey) private var showMenuBarIcon: Bool = UserDefaults.standard.bool(forKey: showMenuBarIconKey) // Initialize from UserDefaults
+    @AppStorage(Constants.showMenuBarIconKey) private var showMenuBarIcon: Bool = UserDefaults.standard.bool(forKey: Constants.showMenuBarIconKey) // Initialize from UserDefaults
 
     // Controller for managing login item status
     @StateObject private var loginItemController = LoginItemController()
@@ -41,7 +38,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         // Ensure a default value exists for preview if needed
-         UserDefaults.standard.register(defaults: [showMenuBarIconKey : true])
+         UserDefaults.standard.register(defaults: [Constants.showMenuBarIconKey : true])
         return SettingsView()
     }
 }
