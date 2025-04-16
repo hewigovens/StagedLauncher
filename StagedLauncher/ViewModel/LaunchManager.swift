@@ -1,6 +1,6 @@
-import SwiftUI
-import Combine
 import AppKit
+import Combine
+import SwiftUI
 
 class LaunchManager: ObservableObject {
     private let appStore: AppStore

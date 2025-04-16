@@ -1,5 +1,5 @@
-import SwiftUI
 import ServiceManagement
+import SwiftUI
 
 class LoginItemController: ObservableObject {
     @Published var launchAtLoginEnabled: Bool = false

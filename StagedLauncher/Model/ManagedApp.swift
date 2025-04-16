@@ -21,6 +21,7 @@ struct ManagedApp: Identifiable, Codable, Equatable {
         default: return "\(seconds / 60) Min"
         }
     }
+
     // --- End Delay Options ---
 
     // Computed property to resolve the URL from bookmark data

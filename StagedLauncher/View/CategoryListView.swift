@@ -32,7 +32,6 @@ struct CategoryListView: View {
     }
 }
 
-
 #Preview {
     let previewAppStore = AppStore()
     // Add some dummy data to previewAppStore to generate categories
@@ -42,11 +41,11 @@ struct CategoryListView: View {
         ManagedApp.new(name: "OtherApp", bundleIdentifier: "com.example.otherapp", bookmark: nil, category: "Other"),
         ManagedApp.new(name: "AnotherDevApp", bundleIdentifier: "com.example.anotherdev", bookmark: nil, category: "public.app-category.developer-tools")
     ]
-    
+
     let previewViewModel = ContentViewModel(appStore: previewAppStore)
-    
+
     // Set the initial selected category for preview
     previewViewModel.selectedCategory = "All"
-    
+
     return CategoryListView(viewModel: previewViewModel)
 }

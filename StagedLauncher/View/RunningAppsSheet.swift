@@ -69,6 +69,6 @@ struct RunningAppsSheet: View {
     // Add a dummy app to check the 'Added' state
     appStore.managedApps.append(ManagedApp.new(name: "Dummy", bundleIdentifier: "com.apple.finder", bookmark: nil, category: "Other"))
     let contentViewModel = ContentViewModel(appStore: appStore)
-    
+
     return RunningAppsSheet(contentViewModel: contentViewModel)
 }

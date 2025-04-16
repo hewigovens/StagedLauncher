@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 import SwiftUI
 
 /// Manages the list of managed applications and persists them.
@@ -26,14 +26,14 @@ class AppStore: ObservableObject {
     func loadApps() {
         if let savedApps = UserDefaults.standard.data(forKey: userDefaultsKey) {
             if let decodedApps = try? JSONDecoder().decode([ManagedApp].self, from: savedApps) {
-                self.managedApps = decodedApps
+                managedApps = decodedApps
                 print("Apps loaded from UserDefaults.")
                 return
             }
             print("Error: Failed to decode saved apps.")
         }
         // Initialize with empty or default if nothing saved/error decoding
-        self.managedApps = []
+        managedApps = []
         print("No saved apps found or error decoding, initializing empty list.")
     }
 

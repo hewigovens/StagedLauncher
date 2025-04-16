@@ -10,6 +10,9 @@ struct ManagedAppCell: View {
     // Index of the row for alternating background
     var index: Int
 
+    // State for controlling the login item info popover
+    @State private var showingLoginItemInfo = false
+
     var body: some View {
         // The HStack layout moved from ContentView
         HStack(spacing: 10) { // Add spacing between elements
@@ -18,8 +21,28 @@ struct ManagedAppCell: View {
                 .scaledToFit()
                 .frame(width: 48, height: 48) // Increased icon size
 
-            Text(app.name)
-            
+            // Group name and warning icon
+            HStack(spacing: 4) {
+                Text(app.name)
+
+                // Show warning if the app is already a system login item
+                if viewModel.isLoginItem(app: app) {
+                    // Button to toggle the popover
+                    Button {
+                        showingLoginItemInfo = true
+                    } label: {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.orange)
+                    }
+                    .buttonStyle(.plain) // Make it look like a plain image
+                    // Popover attached to the button's label (the Image)
+                    .popover(isPresented: $showingLoginItemInfo, arrowEdge: .bottom) {
+                        Text("This app is already in System Login Items.")
+                            .padding()
+                    }
+                }
+            }
+
             Spacer() // Pushes subsequent views to the right
 
             // Replace TextField with Picker for delay options
@@ -52,13 +75,12 @@ struct ManagedAppCell: View {
 
 // Optional: Add a preview provider
 struct ManagedAppCell_Previews: PreviewProvider {
-    
     static var appStore: AppStore = {
         let dummyAppStore = AppStore()
         dummyAppStore.addApp(name: "Preview App", bundleIdentifier: "com.example.preview", bookmark: nil, category: "Other")
         return dummyAppStore
     }()
-    
+
     static var previews: some View {
         let appBinding = Binding<ManagedApp>(
             get: { Self.appStore.managedApps[0] },

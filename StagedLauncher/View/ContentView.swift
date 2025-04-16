@@ -30,9 +30,9 @@ struct ContentView: View {
                         let app = viewModel.filteredApps[index]
                         // Find the binding for the specific app in the original AppStore array
                         if let originalIndex = appStore.managedApps.firstIndex(where: { $0.id == app.id }) {
-                            ManagedAppCell(app: $appStore.managedApps[originalIndex], 
-                                           viewModel: viewModel, 
-                                           appStore: appStore, 
+                            ManagedAppCell(app: $appStore.managedApps[originalIndex],
+                                           viewModel: viewModel,
+                                           appStore: appStore,
                                            index: index)
                                 // Tag the row with the app's ID for selection
                                 .tag(app.id)

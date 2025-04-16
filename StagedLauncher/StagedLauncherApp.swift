@@ -4,7 +4,7 @@ import SwiftUI
 struct StagedLauncherApp: App {
     // Inject the App Delegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     @StateObject private var appStore = AppStore()
     @StateObject var launchManager: LaunchManager
 
@@ -13,7 +13,7 @@ struct StagedLauncherApp: App {
         _appStore = StateObject(wrappedValue: store)
         let manager = LaunchManager(appStore: store)
         _launchManager = StateObject(wrappedValue: manager)
-        
+
         // Pass the created LaunchManager to the AppDelegate
         appDelegate.launchManager = manager
     }

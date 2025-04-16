@@ -8,9 +8,9 @@ struct SettingsView: View {
         // Use a Form for standard settings layout
         Form {
             Toggle("Launch at login", isOn: $loginItemController.launchAtLoginEnabled)
-                .onChange(of: loginItemController.launchAtLoginEnabled, {
+                .onChange(of: loginItemController.launchAtLoginEnabled) {
                     loginItemController.toggleLaunchAtLogin()
-                })
+                }
         }
         .padding()
         // Add a fixed frame, common for settings windows

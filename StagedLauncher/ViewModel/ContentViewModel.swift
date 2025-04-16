@@ -1,6 +1,6 @@
+import AppKit // Import AppKit for NSOpenPanel
 import Foundation
 import SwiftUI
-import AppKit // Import AppKit for NSOpenPanel
 
 @MainActor
 class ContentViewModel: ObservableObject {
@@ -8,22 +8,23 @@ class ContentViewModel: ObservableObject {
     @Published var appStore: AppStore
     @Published var showingAlert = false
     @Published var alertMessage = ""
-    
-    // --- Filtering State --- 
+
+    // --- Filtering State ---
     @Published var selectedCategory: String? = nil // Initially show all
-    
+
     var categories: [String] {
         // Get unique categories, sort them, and add "All" at the beginning
         let uniqueCategories = Set(appStore.managedApps.map { $0.category })
         return ["All"] + uniqueCategories.sorted()
     }
-    
+
     var filteredApps: [ManagedApp] {
         guard let category = selectedCategory, category != "All" else {
             return appStore.managedApps // Return all if nil or "All"
         }
         return appStore.managedApps.filter { $0.category == category }
     }
+
     // --- End Filtering State ---
 
     // --- Category Formatting ---
@@ -31,16 +32,17 @@ class ContentViewModel: ObservableObject {
         if rawCategory == "All" || rawCategory == "Other" {
             return rawCategory
         }
-        
+
         let components = rawCategory.split(separator: ".")
         guard let lastComponent = components.last else {
             return rawCategory // Return raw if splitting fails
         }
-        
+
         return lastComponent
             .replacingOccurrences(of: "-", with: " ")
             .capitalized // Capitalize the first letter of each word
     }
+
     // --- End Category Formatting ---
 
     init(appStore: AppStore) {
@@ -56,14 +58,14 @@ class ContentViewModel: ObservableObject {
     func removeApp(id: UUID) {
         appStore.removeApp(id: id)
     }
-    
+
     func removeFilteredApps(at offsets: IndexSet) {
         // 1. Get the apps to remove from the filtered list based on the offsets
         let appsToRemove = offsets.map { filteredApps[$0] }
-        
+
         // 2. Get their IDs
         let idsToRemove = appsToRemove.map { $0.id }
-        
+
         // 3. Remove apps from the original store using their IDs
         idsToRemove.forEach { appStore.removeApp(id: $0) }
     }
@@ -103,7 +105,7 @@ class ContentViewModel: ObservableObject {
             return
         }
 
-        // --- Read Category --- 
+        // --- Read Category ---
         let category = bundle.object(forInfoDictionaryKey: "LSApplicationCategoryType") as? String ?? "Other"
         let finalCategory = category.isEmpty ? "Other" : category
         // --- End Read Category ---
@@ -122,7 +124,7 @@ class ContentViewModel: ObservableObject {
         DispatchQueue.main.async {
             // Check if app already exists (optional, based on bundleId?)
             // if self.appStore.managedApps.contains(where: { $0.bundleIdentifier == bundleId }) { ... }
-            
+
             // Pass category to addApp
             self.appStore.addApp(name: appName, bundleIdentifier: bundleId, bookmark: bookmarkData, category: finalCategory)
         }
@@ -134,6 +136,42 @@ class ContentViewModel: ObservableObject {
     }
 
     // MARK: - Helpers
+
+    /// Checks if the given managed app is present in the system's login items.
+    /// - Parameter app: The `ManagedApp` to check.
+    /// - Returns: `true` if the app is found in login items, `false` otherwise.
+    func isLoginItem(app: ManagedApp) -> Bool {
+        guard let data = app.bookmarkData else {
+            print("Warning: No bookmark data for app \(app.name) to check login item status.")
+            return false // Cannot determine without bookmark
+        }
+
+        var isStale = false
+        do {
+            let appURL = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+
+            if isStale {
+                print("Warning: Stale bookmark data for \(appURL.lastPathComponent) when checking login items.")
+                // Optionally attempt to refresh the bookmark here if needed
+            }
+
+            guard appURL.startAccessingSecurityScopedResource() else {
+                print("Error: Could not access security scoped resource for \(appURL.lastPathComponent) when checking login items.")
+                return false // Cannot determine access
+            }
+            defer { appURL.stopAccessingSecurityScopedResource() } // Ensure we stop accessing
+
+            let loginItemURLs = LoginItemHelper.snapshotLoginItemURLs()
+
+            // Compare the resolved URL's path to the login item URL paths
+            let appPath = appURL.path
+            return loginItemURLs.contains { $0.path == appPath }
+
+        } catch {
+            print("Error resolving bookmark data for \(app.name) when checking login items: \(error.localizedDescription)")
+            return false // Error resolving, assume not a login item
+        }
+    }
 
     // MARK: - Icon Retrieval
 

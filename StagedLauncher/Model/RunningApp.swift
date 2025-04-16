@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 struct RunningApp: Identifiable {
     let id = UUID()

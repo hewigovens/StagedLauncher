@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 class RunningAppsViewModel: ObservableObject {
     @Published var runningApps: [RunningApp] = []
@@ -14,8 +14,8 @@ class RunningAppsViewModel: ObservableObject {
                let name = app.localizedName,
                let bundleId = app.bundleIdentifier,
                let icon = app.icon,
-               let url = app.bundleURL {
-
+               let url = app.bundleURL
+            {
                 let runningApp = RunningApp(
                     name: name,
                     bundleIdentifier: bundleId,
