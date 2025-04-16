@@ -9,10 +9,14 @@ class RunningAppsViewModel: ObservableObject {
         let running = NSWorkspace.shared.runningApplications
 
         for app in running {
-            // Filter for regular applications that can be activated
-            if app.activationPolicy == .regular,
-               let name = app.localizedName,
-               let bundleId = app.bundleIdentifier,
+            guard let bundleId = app.bundleIdentifier else {
+                continue
+            }
+            if bundleId.starts(with: "com.apple") || bundleId == Constants.selfBundleId {
+                continue
+            }
+
+            if let name = app.localizedName,
                let icon = app.icon,
                let url = app.bundleURL
             {
