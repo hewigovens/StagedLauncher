@@ -76,15 +76,19 @@ class MenuBarManager: NSObject {
         // Build the menu
         let menu = NSMenu()
 
+        let aboutMenuItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
+        aboutMenuItem.target = self
+        menu.addItem(aboutMenuItem)
+
         toggleMenuItem = NSMenuItem(title: "Show Dock Icon", action: #selector(toggleMenuBarPreference), keyEquivalent: "")
         toggleMenuItem?.target = self
-        updateToggleMenuItemTitle(currentState: true) // Icon is being created, so state is true
+        updateToggleMenuItemTitle(currentState: true)
         menu.addItem(toggleMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit StagedLauncher", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-        statusItem?.menu = menu
+        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
 
+        statusItem?.menu = menu
         statusItem?.isVisible = true
     }
 
@@ -122,4 +126,9 @@ class MenuBarManager: NSObject {
     }
 
     @objc func statusBarButtonClicked(sender: NSStatusBarButton) {}
+
+    @objc func showAbout() {
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        NSApplication.shared.orderFrontStandardAboutPanel(nil)
+    }
 }
