@@ -10,6 +10,7 @@ struct CategoryListView: View {
             ForEach(viewModel.categories, id: \.self) { category in
                 // Wrap in HStack and add Spacer to fill width
                 HStack {
+                    Text(emojiForCategory(category)) // Add emoji
                     Text(viewModel.formatCategoryName(category))
                     Spacer() // Make HStack fill the row width
                 }
@@ -30,6 +31,56 @@ struct CategoryListView: View {
         // Add translucent background material
         .background(.ultraThinMaterial)
     }
+
+    // Helper function to get an emoji for a category
+    private func emojiForCategory(_ category: String) -> String {
+        switch category {
+        case Constants.categoryAllApps:
+            return "🌐"
+        case "public.app-category.developer-tools":
+            return "🛠️"
+        case "public.app-category.productivity":
+            return "📊"
+        case "public.app-category.utilities":
+            return "🔧"
+        case "public.app-category.games":
+            return "🎮"
+        case "public.app-category.graphics-design":
+            return "🎨"
+        case "public.app-category.social-networking":
+            return "💬"
+        case "public.app-category.entertainment":
+            return "🎬"
+        case "public.app-category.music":
+             return "🎵"
+        case "public.app-category.photography":
+             return "📸"
+        case "public.app-category.education":
+             return "🎓"
+        case "public.app-category.finance":
+             return "💰"
+        case "public.app-category.health-fitness":
+             return "💪"
+        case "public.app-category.lifestyle":
+             return "🛋️"
+        case "public.app-category.medical":
+             return "⚕️"
+        case "public.app-category.reference":
+             return "📖"
+        case "public.app-category.travel":
+             return "✈️"
+        case "public.app-category.weather":
+             return "☀️"
+        case "Other":
+            return "📁"
+        default:
+            // Check if it's a UTI format and try to extract a general type
+            if category.starts(with: "public.app-category.") {
+                return "📄" // Generic document/app icon
+            }
+            return "❓" // Unknown category
+        }
+    }
 }
 
 #Preview {
@@ -45,7 +96,7 @@ struct CategoryListView: View {
     let previewViewModel = ContentViewModel(appStore: previewAppStore)
 
     // Set the initial selected category for preview
-    previewViewModel.selectedCategory = "All"
+    previewViewModel.selectedCategory = Constants.categoryAllApps
 
     return CategoryListView(viewModel: previewViewModel)
 }

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staged Launcher - Launch Your Apps Seamlessly</title>
+    <style>
+        :root {
+            --primary-color: #007AFF; /* Apple Blue */
+            --secondary-color: #5AC8FA; /* Lighter Blue */
+            --feature-title-blue: #0A84FF; /* Slightly different blue for feature titles */
+            --background-light: #f8f9fa;
+            --background-white: #ffffff;
+            --text-primary: #1d1d1f; /* Near Black */
+            --text-secondary: #6e6e73; /* Gray */
+            --border-color: #d2d2d7;
+            --button-dark: #333333; /* Dark Gray for Download Button */
+            --button-dark-hover: #555555;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-white);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header .logo {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+        }
+
+        header .logo img {
+            height: 24px; /* Adjust size as needed */
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        nav a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-size: 0.95rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            /* background: linear-gradient(180deg, #e0f7ff 0%, var(--background-white) 100%); */
+            padding: 5rem 2rem 4rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            margin-bottom: 0.75rem;
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--text-secondary);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 960px;
+            margin: 3rem auto;
+            padding: 0 2rem; /* Adjusted padding */
+            /* Removed background/shadow for cleaner look */
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 2.5rem;
+            /* Removed border */
+        }
+
+        #about p {
+             text-align: center;
+             max-width: 700px;
+             margin-left: auto;
+             margin-right: auto;
+             color: var(--text-secondary);
+             font-size: 1.1rem;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly larger min size */
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .feature-item {
+            background-color: var(--background-light);
+            padding: 1.5rem;
+            border-radius: 12px; /* More rounded */
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-item h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--feature-title-blue);
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Screenshots */
+        .screenshots {
+            text-align: center;
+        }
+        .screenshots p:first-of-type {
+             color: var(--text-secondary);
+             margin-bottom: 2rem;
+        }
+
+        .screenshots img {
+            max-width: 90%; /* Larger screenshots */
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Consistent rounding */
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Download Section */
+        .download-section {
+            text-align: center;
+            padding: 3rem 2rem;
+            background-color: var(--background-light);
+            border-radius: 12px;
+            margin-top: 4rem;
+            border: 1px solid var(--border-color);
+        }
+        .download-section h2 {
+             margin-bottom: 1rem;
+        }
+        .download-section p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Buttons */
+        .cta-button {
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            justify-content: center;
+            padding: 14px 30px;
+            font-size: 1.1rem;
+            font-weight: 500; /* Medium weight */
+            color: var(--background-white);
+            background-color: var(--button-dark); /* Use dark gray */
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .cta-button:hover {
+            background-color: var(--button-dark-hover); /* Darker gray on hover */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Style for icon inside button */
+        .cta-button svg {
+            width: 1em; /* Relative to font size */
+            height: 1em;
+            margin-right: 0.5em;
+            fill: currentColor; /* Inherit text color (white) */
+        }
+
+        /* Social Links */
+        .social-links {
+            margin-top: 1rem;
+            margin-bottom: 1rem; /* Add space before copyright */
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            margin: 0 0.75rem;
+            display: inline-block; /* Needed for transform */
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .social-links svg {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background-color: var(--background-light);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="assets/icon.png" alt="Icon">
+            Staged Launcher
+        </div>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#features">Features</a>
+            <a href="#screenshots">Screenshots</a>
+            <a href="#download" class="cta-button" style="background-color: var(--primary-color); padding: 8px 16px; font-size: 0.9rem;">Download</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Launch Your Apps Seamlessly</h1>
+        <p>The easiest way to manage and launch applications across different stages on your Mac. Simplify your workflow.</p>
+        <a href="#download" class="cta-button">
+            <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 15.4-67.1 34.4-16.5 20.8-27.6 47.7-27.6 73.8 26.3 1.3 50.4-10.5 67.7-35.7z"/></svg>
+            Download for macOS
+        </a>
+    </section>
+
+    <div class="container">
+
+        <section id="about" class="section">
+            <h2>About Staged Launcher</h2>
+            <p>Staged Launcher provides a streamlined interface for developers, testers, and teams to quickly access and launch different versions or configurations of their applications. Say goodbye to complex scripts and manual setup for each stage (like development, testing, staging, production). Built natively for macOS, ensuring a smooth and integrated experience.</p>
+        </section>
+
+        <section id="features" class="section">
+            <h2>Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>Easy Configuration</h3>
+                    <p>Define your applications and their launch parameters through a simple, intuitive UI.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Multi-Stage Support</h3>
+                    <p>Manage development, testing, staging, and production versions effortlessly.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Quick Launch Access</h3>
+                    <p>Access and launch any configured app stage with just a click, right from your menu bar or Dock.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>Customizable Commands</h3>
+                    <p>Tailor launch commands and environment variables precisely for each application stage.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>Native macOS Experience</h3>
+                    <p>Designed specifically for macOS, integrating seamlessly with your existing workflow.</p>
+                </div>
+                 <div class="feature-item">
+                    <h3>Lightweight & Fast</h3>
+                    <p>Minimal resource usage ensures Staged Launcher runs quickly without slowing you down.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="screenshots" class="section">
+            <h2>See Staged Launcher in Action</h2>
+            <div class="screenshots">
+                <img src="assets/main_window.png" alt="Staged Launcher Main Interface">
+                <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 2rem;">Intuitive Main Application Window</p>
+                <img src="assets/running_apps_window.png" alt="Staged Launcher Settings">
+                 <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.5rem;">Easy Configuration Settings</p>
+            </div>
+        </section>
+
+        <section id="download" class="download-section">
+            <h2>Get Staged Launcher</h2>
+            <p>Download the latest version for macOS and start simplifying your app launching process today!</p>
+            <!-- Replace '#' with the actual download link -->
+            <a href="#" class="cta-button">
+                 <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 15.4-67.1 34.4-16.5 20.8-27.6 47.7-27.6 73.8 26.3 1.3 50.4-10.5 67.7-35.7z"/></svg>
+                 Download Now
+            </a>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="social-links">
+            <!-- Replace # with actual URLs -->
+            <a href="#" target="_blank" title="X / Twitter">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" target="_blank" title="GitHub">
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            </a>
+        </div>
+        &copy; 2025 Staged Launcher. All rights reserved.
+    </footer>
+
+</body>
+</html>

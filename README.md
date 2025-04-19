@@ -31,7 +31,7 @@ A simple but modern macOS utility with staged startup support. Staged Launcher h
 4. Set a startup delay
 5. Enable/disable items using the toggle switch
 
-<img src="./docs/screenshot.png" alt="StagedLauncher" width="50%">
+<img src="./website/assets/screenshot.png" alt="StagedLauncher" width="50%">
 
 ## How to build
 
