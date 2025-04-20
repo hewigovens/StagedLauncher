@@ -5,13 +5,15 @@ import SwiftUI
 class LaunchManager: ObservableObject {
     private let appStore: AppStore
     private weak var errorHandler: ErrorPresentable?
+    private let appLauncherService: AppLauncherService
     private var cancellables = Set<AnyCancellable>()
     private var launchTimers: [UUID: Timer] = [:] // To manage individual app launch timers
 
-    // Updated initializer to accept ErrorHandler
-    init(appStore: AppStore, errorHandler: ErrorPresentable?) {
+    // Updated initializer to accept ErrorHandler and AppLauncherService
+    init(appStore: AppStore, errorHandler: ErrorPresentable?, appLauncherService: AppLauncherService) {
         self.appStore = appStore
         self.errorHandler = errorHandler
+        self.appLauncherService = appLauncherService
         // Observe changes to individual app settings (isEnabled, delaySeconds)
         // to automatically reschedule launches.
         setupBindings()
@@ -54,7 +56,7 @@ class LaunchManager: ObservableObject {
         guard app.delaySeconds > 0 else {
             Logger.info("Launch Manager: Launching immediately (0 delay) for app: \(app.name)")
             Task {
-                await launchApp(app)
+                await appLauncherService.launchApp(app)
             }
             return
         }
@@ -65,7 +67,7 @@ class LaunchManager: ObservableObject {
         let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(app.delaySeconds), repeats: false) { [weak self] _ in
             Logger.info("Launch Manager: Timer fired for \(app.name).")
             Task {
-                await self?.launchApp(app)
+                await self?.appLauncherService.launchApp(app)
                 self?.launchTimers.removeValue(forKey: app.id)
             }
         }
@@ -90,58 +92,6 @@ class LaunchManager: ObservableObject {
     }
 
     // MARK: - Private Helpers
-
-    @MainActor // Ensure this runs on the main thread due to showError call
-    private func launchApp(_ app: ManagedApp) {
-        // Check if the app is already running
-        let isRunning = NSWorkspace.shared.runningApplications.contains { runningApp in
-            runningApp.bundleIdentifier == app.bundleIdentifier
-        }
-
-        guard !isRunning else {
-            Logger.info("Launch Manager: Skipping launch for \(app.name) because it is already running.")
-            return
-        }
-
-        guard let bookmarkData = app.bookmarkData else {
-            let errorMessage = "Launch Manager: Error - No bookmark data found for \(app.name). Cannot launch."
-            Logger.error(errorMessage)
-            errorHandler?.showError(message: errorMessage) // Use errorHandler
-            return
-        }
-
-        do {
-            var isStale = false
-            let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-
-            guard url.startAccessingSecurityScopedResource() else {
-                let errorMessage = "Launch Manager: Error - Could not resolve secure URL for \(app.name). Bookmark data might be stale or invalid."
-                Logger.error(errorMessage)
-                errorHandler?.showError(message: errorMessage) // Use errorHandler
-                return
-            }
-            defer { url.stopAccessingSecurityScopedResource() }
-
-            Logger.info("Launch Manager: Attempting to launch \(app.name) at URL: \(url.path)")
-            let configuration = NSWorkspace.OpenConfiguration()
-
-            NSWorkspace.shared.openApplication(at: url, configuration: configuration) { runningApp, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        let errorMessage = "Launch Manager: Error launching \(app.name): \(error.localizedDescription)"
-                        Logger.error(errorMessage)
-                        self.errorHandler?.showError(message: errorMessage) // Use errorHandler
-                    } else {
-                        Logger.info("Launch Manager: Successfully launched \(app.name). Process ID: \(runningApp?.processIdentifier ?? 0)")
-                    }
-                }
-            }
-        } catch {
-            let errorMessage = "Launch Manager: Error resolving bookmark data or launching \(app.name): \(error.localizedDescription)"
-            Logger.error(errorMessage)
-            errorHandler?.showError(message: errorMessage) // Use errorHandler
-        }
-    }
 
     /// Invalidates and removes the timer for a specific app ID.
     private func invalidateTimer(for id: UUID) {
@@ -182,4 +132,3 @@ class LaunchManager: ObservableObject {
             .store(in: &cancellables)
     }
 }
-

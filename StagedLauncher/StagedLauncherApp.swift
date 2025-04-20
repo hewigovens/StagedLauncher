@@ -17,8 +17,11 @@ struct StagedLauncherApp: App {
         let vm = ContentViewModel(appStore: store)
         _viewModel = StateObject(wrappedValue: vm)
 
-        // Pass store and the viewModel (as ErrorHandler) to LaunchManager
-        let manager = LaunchManager(appStore: store, errorHandler: vm)
+        // Create AppLauncherService, passing the ViewModel as the error handler
+        let launcherService = AppLauncherService(errorHandler: vm)
+
+        // Create LaunchManager, passing AppStore, ViewModel (as ErrorHandler), and AppLauncherService
+        let manager = LaunchManager(appStore: store, errorHandler: vm, appLauncherService: launcherService)
         _launchManager = StateObject(wrappedValue: manager)
 
         // Pass the created LaunchManager to the AppDelegate

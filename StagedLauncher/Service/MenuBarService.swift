@@ -1,8 +1,8 @@
 import AppKit
 import SwiftUI
 
-class MenuBarManager: NSObject {
-    static let shared = MenuBarManager()
+class MenuBarService: NSObject {
+    static let shared = MenuBarService()
 
     private var statusItem: NSStatusItem?
     private var toggleMenuItem: NSMenuItem?

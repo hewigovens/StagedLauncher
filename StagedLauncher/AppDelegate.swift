@@ -1,10 +1,7 @@
 import AppKit
 import SwiftUI
 
-// Create a delegate to hook into App Lifecycle events
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    // We need access to the LaunchManager instance created in the App struct
-    // This will be injected from StagedLauncherApp
     var launchManager: LaunchManager?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -12,10 +9,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         // Start the launch manager once the app is ready
         launchManager?.startMonitoring()
 
-        // Setup the menu bar icon manager (now handles initial activation policy)
-        MenuBarManager.shared.setupMenuBar()
+        // Setup the menu bar using the new service name
+        MenuBarService.shared.setupMenuBar()
+
+        // Register for the termination notification
+        NSWorkspace.shared.notificationCenter.addObserver(self, selector: #selector(applicationWillTerminate(_:)), name: NSWorkspace.willPowerOffNotification, object: nil)
     }
 
+    @objc
     func applicationWillTerminate(_ notification: Notification) {
         Logger.info("AppDelegate: Application will terminate.")
         // Clean up timers when the app quits
@@ -26,13 +27,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         return true
     }
 
-    // --- Dock Menu --- 
+    // --- Dock Menu ---
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         let menu = NSMenu()
         let toggleItem = NSMenuItem(title: "Switch to Menu Bar Only",
-                                    action: #selector(MenuBarManager.toggleMenuBarPreference),
+                                    action: #selector(MenuBarService.toggleMenuBarPreference),
                                     keyEquivalent: "")
-        toggleItem.target = MenuBarManager.shared
+        toggleItem.target = MenuBarService.shared
         menu.addItem(toggleItem)
         return menu
     }

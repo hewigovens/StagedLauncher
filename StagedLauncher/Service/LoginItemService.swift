@@ -1,8 +1,11 @@
 import ServiceManagement
-import SwiftUI
+import AppKit
 
-class LoginItemController: ObservableObject {
+class LoginItemService: ObservableObject {
     
+    static let shared = LoginItemService()
+
+    // MARK: - Public Properties
     @Published var launchAtLoginEnabled: Bool = false
 
     private let service = SMAppService.mainApp
