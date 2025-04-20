@@ -31,7 +31,7 @@ A simple but modern macOS utility with staged startup support. Staged Launcher h
 4. Set a startup delay
 5. Enable/disable items using the toggle switch
 
-<img src="./website/assets/main_window.png" alt="StagedLauncher" width="50%">
+<img src="./website/assets/main_window.png" alt="StagedLauncher" width="100%">
 
 ## How to build
 
@@ -41,8 +41,8 @@ A simple but modern macOS utility with staged startup support. Staged Launcher h
 
 ## TODO
 
-1. Manage login items shown in System Settings
-2. Manage BTM items
+- [ ] Manage login items shown in System Settings
+- [ ] Manage BTM items
 
 ## License
 
