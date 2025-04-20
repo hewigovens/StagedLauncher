@@ -170,17 +170,6 @@ class LaunchManager: ObservableObject {
                 self?.scheduleLaunchesForAllEnabledApps()
             }
             .store(in: &cancellables)
-
-        // Observe changes *within* each app (isEnabled, delaySeconds)
-        // This requires observing the publisher for each app individually if ManagedApp is a struct.
-        // A more robust way (if ManagedApp was a class) would be observing each app's properties.
-        // Given ManagedApp is a struct, observing the whole array is simpler for now,
-        // although potentially less efficient if only one app changes.
-        // The debounce above helps mitigate frequent rescheduling.
-
-        // Alternative (more complex with structs): If performance becomes an issue,
-        // you'd need to manage individual subscriptions to each app's changes,
-        // possibly by having AppStore vend publishers for individual app updates.
     }
 
     private func setupAppStoreSubscription() {
@@ -194,4 +183,3 @@ class LaunchManager: ObservableObject {
     }
 }
 
-// Helper extension to check if an NSRunningApplication corresponds to our managed app

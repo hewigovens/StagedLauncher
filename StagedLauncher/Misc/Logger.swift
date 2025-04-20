@@ -41,26 +41,26 @@ enum Logger {
     }
 
     static func info(_ message: String) {
-        #if DEBUG
+#if DEBUG
         print("INFO: \(message)")
-        #else
+#else
         writeToFile("INFO: \(message)")
-        #endif
+#endif
     }
 
     static func warning(_ message: String) {
-        #if DEBUG
+#if DEBUG
         print("WARN: \(message)")
-        #else
+#else
         writeToFile("WARN: \(message)")
-        #endif
+#endif
     }
 
     static func error(_ message: String) {
-        #if DEBUG
+#if DEBUG
         print("ERROR: \(message)")
-        #else
+#else
         writeToFile("ERROR: \(message)")
-        #endif
+#endif
     }
 }

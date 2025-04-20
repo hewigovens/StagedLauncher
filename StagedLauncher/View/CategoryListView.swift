@@ -37,6 +37,8 @@ struct CategoryListView: View {
         switch category {
         case Constants.categoryAllApps:
             return "🌐"
+        case "public.app-category.business":
+            return "💼"
         case "public.app-category.developer-tools":
             return "🛠️"
         case "public.app-category.productivity":
@@ -53,6 +55,8 @@ struct CategoryListView: View {
             return "🎬"
         case "public.app-category.music":
              return "🎵"
+        case "public.app-category.news":
+            return "📰"
         case "public.app-category.photography":
              return "📸"
         case "public.app-category.education":
@@ -67,8 +71,12 @@ struct CategoryListView: View {
              return "⚕️"
         case "public.app-category.reference":
              return "📖"
+        case "public.app-category.sports":
+            return "⚽"
         case "public.app-category.travel":
              return "✈️"
+        case "public.app-category.video":
+            return "🎥"
         case "public.app-category.weather":
              return "☀️"
         case "Other":
