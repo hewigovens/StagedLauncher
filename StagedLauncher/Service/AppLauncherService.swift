@@ -3,9 +3,14 @@ import Combine
 
 class AppLauncherService {
     private weak var errorHandler: ErrorPresentable?
+    private let notifier: NotificationService
 
-    init(errorHandler: ErrorPresentable?) {
+    init(
+        errorHandler: ErrorPresentable?,
+        notifier: NotificationService = .shared
+    ) {
         self.errorHandler = errorHandler
+        self.notifier = notifier
     }
 
     // Implementation moved from LaunchManager
@@ -21,7 +26,9 @@ class AppLauncherService {
             return
         }
 
-        guard let bookmarkData = app.bookmarkData else {
+        guard
+            let bookmarkData = app.bookmarkData
+        else {
             let errorMessage = "AppLauncherService: Error - No bookmark data found for \(app.name). Cannot launch."
             Logger.error(errorMessage)
             errorHandler?.showError(message: errorMessage)
@@ -30,9 +37,16 @@ class AppLauncherService {
 
         do {
             var isStale = false
-            let url = try URL(resolvingBookmarkData: bookmarkData, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+            let url = try URL(
+                resolvingBookmarkData: bookmarkData,
+                options: .withSecurityScope,
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            )
 
-            guard url.startAccessingSecurityScopedResource() else {
+            guard
+                url.startAccessingSecurityScopedResource()
+            else {
                 let errorMessage = "AppLauncherService: Error - Could not resolve secure URL for \(app.name). Bookmark data might be stale or invalid."
                 Logger.error(errorMessage)
                 errorHandler?.showError(message: errorMessage)
@@ -44,20 +58,33 @@ class AppLauncherService {
             let configuration = NSWorkspace.OpenConfiguration()
 
             NSWorkspace.shared.openApplication(at: url, configuration: configuration) { runningApp, error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        let errorMessage = "AppLauncherService: Error launching \(app.name): \(error.localizedDescription)"
-                        Logger.error(errorMessage)
-                        self.errorHandler?.showError(message: errorMessage)
-                    } else {
-                        Logger.info("AppLauncherService: Successfully launched \(app.name). Process ID: \(runningApp?.processIdentifier ?? 0)")
-                    }
-                }
+                self.handleCompletion(app: app, runningApp: runningApp, error: error)
             }
         } catch {
             let errorMessage = "AppLauncherService: Error resolving bookmark data or launching \(app.name): \(error.localizedDescription)"
             Logger.error(errorMessage)
             errorHandler?.showError(message: errorMessage)
+        }
+    }
+
+    private func handleCompletion(
+        app: ManagedApp,
+        runningApp: NSRunningApplication?,
+        error: Error?
+    ) {
+        Task { @MainActor in
+            if let error = error {
+                let errorMessage = "AppLauncherService: Error launching \(app.name): \(error.localizedDescription)"
+                Logger.error(errorMessage)
+                self.errorHandler?.showError(message: errorMessage)
+            } else {
+                Logger.info("AppLauncherService: Successfully launched \(app.name). Process ID: \(runningApp?.processIdentifier ?? 0)")
+                if UserDefaults.standard
+                    .bool(forKey: Constants.enableNotificationsKey)
+                {
+                    self.notifier.scheduleLaunchNotification(for: app)
+                }
+            }
         }
     }
 }

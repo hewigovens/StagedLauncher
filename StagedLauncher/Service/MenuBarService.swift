@@ -76,9 +76,25 @@ class MenuBarService: NSObject {
         // Build the menu
         let menu = NSMenu()
 
-        let aboutMenuItem = NSMenuItem(title: "About", action: #selector(showAbout), keyEquivalent: "")
+        let aboutMenuItem = NSMenuItem(
+            title: "About",
+            action: #selector(showAbout),
+            keyEquivalent: ""
+        )
         aboutMenuItem.target = self
         menu.addItem(aboutMenuItem)
+
+        // Add Settings Menu Item
+        let settingsMenuItem = NSMenuItem(
+            title: "Show Main Window",
+            action: #selector(showMainWindow),
+            keyEquivalent: ""
+        )
+        settingsMenuItem.target = self
+        menu.addItem(settingsMenuItem)
+
+        // Separator before Toggle Item
+        menu.addItem(NSMenuItem.separator())
 
         toggleMenuItem = NSMenuItem(title: "Show Dock Icon", action: #selector(toggleMenuBarPreference), keyEquivalent: "")
         toggleMenuItem?.target = self
@@ -98,7 +114,7 @@ class MenuBarService: NSObject {
         }
         NSStatusBar.system.removeStatusItem(item)
         statusItem = nil
-        toggleMenuItem = nil // Clear the reference
+        toggleMenuItem = nil
     }
 
     // --- Actions ---
@@ -122,13 +138,28 @@ class MenuBarService: NSObject {
     private func updateToggleMenuItemTitle(currentState showIcon: Bool) {
         if showIcon {
             toggleMenuItem?.title = "Show Dock Icon" // When icon is shown, option is to show dock
+        } else {
+            toggleMenuItem?.title = "Hide Dock Icon / Show Menu Bar Icon" // Clarify the action
         }
     }
 
     @objc func statusBarButtonClicked(sender: NSStatusBarButton) {}
 
     @objc func showAbout() {
-        NSApplication.shared.activate(ignoringOtherApps: true)
-        NSApplication.shared.orderFrontStandardAboutPanel(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        NSApp.orderFrontStandardAboutPanel(nil)
+    }
+
+    /// Brings the main application window to the front.
+    @objc func showMainWindow() {
+        NSApp.activate(ignoringOtherApps: true)
+        if let keyWindow = NSApp.keyWindow {
+            keyWindow.makeKeyAndOrderFront(nil)
+        } else if let mainWindow = NSApp.mainWindow {
+            mainWindow.makeKeyAndOrderFront(nil)
+        } else {
+            // If there's truly no window, activating should trigger the App scene to create one.
+            Logger.info("MenuBarService: Activated app to show main window.")
+        }
     }
 }

@@ -67,7 +67,13 @@ class LaunchManager: ObservableObject {
         let timer = Timer.scheduledTimer(withTimeInterval: TimeInterval(app.delaySeconds), repeats: false) { [weak self] _ in
             Logger.info("Launch Manager: Timer fired for \(app.name).")
             Task {
-                await self?.appLauncherService.launchApp(app)
+                // Check if the app still exists and is enabled before launching
+                if self?.appStore.managedApps.contains(where: { $0.id == app.id && $0.isEnabled }) ?? false {
+                    Logger.info("Timer fired for \(app.name). Attempting launch.")
+                    await self?.appLauncherService.launchApp(app)
+                } else {
+                    Logger.info("Launch cancelled for \(app.name) as it was removed or disabled.")
+                }
                 self?.launchTimers.removeValue(forKey: app.id)
             }
         }

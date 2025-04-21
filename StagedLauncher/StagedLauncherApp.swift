@@ -6,7 +6,7 @@ struct StagedLauncherApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     @StateObject private var appStore = AppStore()
-    @StateObject var viewModel: ContentViewModel 
+    @StateObject var viewModel: ContentViewModel
     @StateObject var launchManager: LaunchManager
 
     init() {
@@ -36,10 +36,12 @@ struct StagedLauncherApp: App {
             // Pass the existing viewModel to ContentView
             ContentView(appStore: appStore, viewModel: viewModel)
                 .environmentObject(launchManager)
-                .frame(minWidth: 500, minHeight: 300) // Adjust size as needed
+                .frame(minWidth: 500, minHeight: 300)
         }
         Settings {
             SettingsView()
+                .navigationTitle("Preferences")
         }
+        .windowStyle(.automatic)
     }
 }

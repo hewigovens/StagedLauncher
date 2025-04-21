@@ -115,15 +115,11 @@ class ContentViewModel: ObservableObject, ErrorPresentable {
             bookmarkData = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
         } catch {
             showError(message: "Failed to create bookmark for application: \(error.localizedDescription)")
-            // Decide if you want to proceed without a bookmark or stop
-            // return
+            return
         }
 
         // Wrap the state update in DispatchQueue.main.async
         DispatchQueue.main.async {
-            // Check if app already exists (optional, based on bundleId?)
-            // if self.appStore.managedApps.contains(where: { $0.bundleIdentifier == bundleId }) { ... }
-
             // Pass category to addApp
             self.appStore.addApp(name: appName, bundleIdentifier: bundleId, bookmark: bookmarkData, category: finalCategory)
         }
