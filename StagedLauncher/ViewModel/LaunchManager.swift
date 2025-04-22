@@ -20,7 +20,6 @@ class LaunchManager: ObservableObject {
     }
 
     deinit {
-        // Invalidate all timers when the manager is deallocated
         invalidateAllTimers()
     }
 
@@ -85,7 +84,7 @@ class LaunchManager: ObservableObject {
     /// Schedules launches for all apps currently marked as enabled in the AppStore.
     func scheduleLaunchesForAllEnabledApps() {
         Logger.info("Launch Manager: Scheduling launches for all enabled apps.")
-        invalidateAllTimers() // Clear existing timers before rescheduling all
+        invalidateAllTimers()
         for app in appStore.managedApps where app.isEnabled {
             scheduleLaunch(for: app)
         }
@@ -116,7 +115,7 @@ class LaunchManager: ObservableObject {
 
     /// Invalidates and removes the timer for a specific app ID.
     private func invalidateTimer(for id: UUID) {
-        if let existingTimer = launchTimers.removeValue(forKey: id) { // Removes and returns value
+        if let existingTimer = launchTimers.removeValue(forKey: id) {
             Logger.info("Launch Manager: Invalidating existing timer for app ID \(id).")
             existingTimer.invalidate()
         }
@@ -137,10 +136,32 @@ class LaunchManager: ObservableObject {
         appStore.$managedApps
             .dropFirst() // Ignore the initial value emitted when apps are first loaded
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main) // Debounce to avoid rapid updates
-            .sink { [weak self] _ in
-                Logger.info("Launch Manager: App list changed, rescheduling all.")
-                self?.scheduleLaunchesForAllEnabledApps()
+            .sink { [weak self] updatedApps in
+                guard let self = self else { return }
+                self.performDifferentialUpdate(updatedApps: updatedApps)
             }
             .store(in: &cancellables)
+    }
+
+    /// Performs a differential update of launch timers based on the latest app list.
+    private func performDifferentialUpdate(updatedApps: [ManagedApp]) {
+        Logger.info("Launch Manager: App list change detected, performing differential update.")
+
+        let currentTimerIDs = Set(launchTimers.keys)
+        let newEnabledAppIDs = Set(updatedApps.filter { $0.isEnabled }.map { $0.id })
+
+        // 1. IDs for timers that need to be invalidated (were running, but shouldn't be anymore)
+        let idsToInvalidate = currentTimerIDs.subtracting(newEnabledAppIDs)
+        for id in idsToInvalidate {
+            invalidateTimer(for: id)
+        }
+
+        // 2. IDs for apps that need timers scheduled (should be running, but aren't yet)
+        let idsToSchedule = newEnabledAppIDs.subtracting(currentTimerIDs)
+        for id in idsToSchedule {
+            if let appToSchedule = updatedApps.first(where: { $0.id == id }) {
+                scheduleLaunch(for: appToSchedule)
+            }
+        }
     }
 }
