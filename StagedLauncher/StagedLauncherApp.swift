@@ -1,9 +1,13 @@
 import SwiftUI
+import Sparkle
 
 @main
 struct StagedLauncherApp: App {
     // Inject the App Delegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    // Create the updater controller
+    let updaterController = SPUStandardUpdaterController(startingUpdater: false, updaterDelegate: nil, userDriverDelegate: nil)
 
     @StateObject private var appStore = AppStore()
     @StateObject var viewModel: ContentViewModel
@@ -39,9 +43,18 @@ struct StagedLauncherApp: App {
                 .frame(minWidth: 480, minHeight: 300)
         }
         Settings {
-            SettingsView()
+            SettingsView(updaterController: updaterController)
+                .environmentObject(appStore)
+                .environmentObject(launchManager)
                 .navigationTitle("Preferences")
         }
         .windowStyle(.automatic)
+        .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates...") {
+                    updaterController.checkForUpdates(nil)
+                }
+            }
+        }
     }
 }
