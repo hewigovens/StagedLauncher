@@ -21,4 +21,6 @@ enum Constants {
 
     /// UserDefaults key for storing the notification preference.
     static let enableNotificationsKey = "enableLaunchNotifications"
+
+    static let enabledQuitSelfKey = "enableQuitSelf"
 }

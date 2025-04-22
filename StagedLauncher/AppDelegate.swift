@@ -6,8 +6,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         Logger.info("AppDelegate: Application finished launching.")
-        // Start the launch manager once the app is ready
-        launchManager?.startMonitoring()
 
         // Setup the menu bar using the new service name
         MenuBarService.shared.setupMenuBar()

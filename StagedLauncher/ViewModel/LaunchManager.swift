@@ -7,7 +7,7 @@ class LaunchManager: ObservableObject {
     private weak var errorHandler: ErrorPresentable?
     private let appLauncherService: AppLauncherService
     private var cancellables = Set<AnyCancellable>()
-    private var launchTimers: [UUID: Timer] = [:] // To manage individual app launch timers
+    private var launchTimers: [UUID: Timer] = [:]
 
     // Updated initializer to accept ErrorHandler and AppLauncherService
     init(appStore: AppStore, errorHandler: ErrorPresentable?, appLauncherService: AppLauncherService) {
@@ -30,7 +30,6 @@ class LaunchManager: ObservableObject {
     func startMonitoring() {
         Logger.info("Launch Manager: Starting monitoring and scheduling initial launches.")
         scheduleLaunchesForAllEnabledApps()
-        setupAppStoreSubscription()
     }
 
     /// Call this when the app quits or when launching should stop.
@@ -75,6 +74,9 @@ class LaunchManager: ObservableObject {
                     Logger.info("Launch cancelled for \(app.name) as it was removed or disabled.")
                 }
                 self?.launchTimers.removeValue(forKey: app.id)
+
+                // Check if all apps are launched *after* this timer's app is processed
+                self?.checkAndQuitIfAllTimersDone()
             }
         }
         launchTimers[app.id] = timer
@@ -99,6 +101,19 @@ class LaunchManager: ObservableObject {
 
     // MARK: - Private Helpers
 
+    /// Checks if all timers have completed and quits the app if the setting is enabled.
+    private func checkAndQuitIfAllTimersDone() {
+        if launchTimers.isEmpty {
+            // Quit the app if enabled
+            if UserDefaults.standard.bool(forKey: Constants.enabledQuitSelfKey) {
+                Logger.info("Launch Manager: All timers finished. Quitting Staged Launcher as configured.")
+                DispatchQueue.main.async { // Ensure UI updates on main thread
+                    NSApplication.shared.terminate(nil)
+                }
+            }
+        }
+    }
+
     /// Invalidates and removes the timer for a specific app ID.
     private func invalidateTimer(for id: UUID) {
         if let existingTimer = launchTimers.removeValue(forKey: id) { // Removes and returns value
@@ -120,17 +135,8 @@ class LaunchManager: ObservableObject {
     private func setupBindings() {
         // Observe the array of managed apps itself (for additions/removals)
         appStore.$managedApps
+            .dropFirst() // Ignore the initial value emitted when apps are first loaded
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main) // Debounce to avoid rapid updates
-            .sink { [weak self] _ in
-                Logger.info("Launch Manager: App list changed, rescheduling all.")
-                self?.scheduleLaunchesForAllEnabledApps()
-            }
-            .store(in: &cancellables)
-    }
-
-    private func setupAppStoreSubscription() {
-        appStore.$managedApps
-            .dropFirst() // Ignore the initial value
             .sink { [weak self] _ in
                 Logger.info("Launch Manager: App list changed, rescheduling all.")
                 self?.scheduleLaunchesForAllEnabledApps()

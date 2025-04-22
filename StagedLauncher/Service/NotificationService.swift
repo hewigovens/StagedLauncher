@@ -30,7 +30,6 @@ class NotificationService {
         let content = UNMutableNotificationContent()
         content.title = "Staged App Launched"
         content.body = "\(app.name) is launched after its delay."
-        content.sound = UNNotificationSound.default
 
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         center.add(request) { error in
