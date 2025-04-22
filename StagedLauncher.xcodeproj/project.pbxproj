@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		BB35F97E2DAE4E8900957F5D /* StagedLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StagedLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB35F98F2DAE4E8A00957F5D /* StagedLauncherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StagedLauncherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB35F9992DAE4E8A00957F5D /* StagedLauncherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StagedLauncherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -85,7 +85,7 @@
 		BB35F97F2DAE4E8900957F5D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BB35F97E2DAE4E8900957F5D /* StagedLauncher.app */,
+				BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */,
 				BB35F98F2DAE4E8A00957F5D /* StagedLauncherTests.xctest */,
 				BB35F9992DAE4E8A00957F5D /* StagedLauncherUITests.xctest */,
 			);
@@ -114,7 +114,7 @@
 			packageProductDependencies = (
 			);
 			productName = StagedLauncher;
-			productReference = BB35F97E2DAE4E8900957F5D /* StagedLauncher.app */;
+			productReference = BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */;
 			productType = "com.apple.product-type.application";
 		};
 		BB35F98E2DAE4E8A00957F5D /* StagedLauncherTests */ = {
@@ -409,7 +409,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Staged Launcher";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -437,7 +437,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.6;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Staged Launcher";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};

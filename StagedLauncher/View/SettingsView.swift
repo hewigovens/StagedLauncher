@@ -24,6 +24,7 @@ struct SettingsView: View {
                 .onChange(of: loginItemService.launchAtLoginEnabled) { _, _ in
                     loginItemService.toggleLaunchAtLogin()
                 }
+                .help("When on, Staged Launcher will be added to your macOS Login Items and launch at each login.")
 
             Divider()
 
@@ -37,7 +38,7 @@ struct SettingsView: View {
                     // Update the menu bar icon visibility using the service
                     MenuBarService.shared.updateMenuBarIconVisibility(shouldShow: newValue)
                 }
-                .help("Show or hide the menu bar icon.")
+                .help("When enabled, hides the Dock icon and places Staged Launcher in the menu bar; disable to restore the Dock icon.")
 
             Toggle("Show App Launch Notifications", isOn: $enableNotifications)
                 .onChange(of: enableNotifications) { _, newValue in
@@ -48,13 +49,13 @@ struct SettingsView: View {
                         Logger.info("Notifications disabled by user setting.")
                     }
                 }
-                .help("Show a notification when a delayed app is launched.")
-            Toggle("Quit Staged Launcher after all apps are launched", isOn: $enabledQuitSelf)
-            .padding(.vertical, 8)
+                .help("When on, you’ll get a notification in Notification Center after delayed app launched.")
+            Toggle("Quit When All Apps Have Launched", isOn: $enabledQuitSelf)
+                .padding(.vertical, 8)
                 .onChange(of: enabledQuitSelf) { _, newValue in
                     self.defaults.set(newValue, forKey: Constants.enabledQuitSelfKey)
                 }
-                .help("Quit the app when all apps are launched.")
+                .help("When enabled, Staged Launcher will automatically quit itself once all selected apps have finished launching.")
         }) // End Form content
         .padding(.horizontal, 16)
         .frame(width: 350, height: 220)
