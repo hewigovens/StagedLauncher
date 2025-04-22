@@ -36,7 +36,7 @@ struct StagedLauncherApp: App {
             // Pass the existing viewModel to ContentView
             ContentView(appStore: appStore, viewModel: viewModel)
                 .environmentObject(launchManager)
-                .frame(minWidth: 500, minHeight: 300)
+                .frame(minWidth: 480, minHeight: 300)
         }
         Settings {
             SettingsView()

@@ -96,13 +96,22 @@ class MenuBarService: NSObject {
         // Separator before Toggle Item
         menu.addItem(NSMenuItem.separator())
 
-        toggleMenuItem = NSMenuItem(title: "Show Dock Icon", action: #selector(toggleMenuBarPreference), keyEquivalent: "")
+        toggleMenuItem = NSMenuItem(
+            title: "Show Dock Icon",
+            action: #selector(toggleMenuBarPreference),
+            keyEquivalent: ""
+        )
         toggleMenuItem?.target = self
         updateToggleMenuItemTitle(currentState: true)
         menu.addItem(toggleMenuItem!)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(
+            title: "Quit",
+            action: #selector(NSApplication.terminate(_:)),
+            keyEquivalent: "q"
+        )
+        )
 
         statusItem?.menu = menu
         statusItem?.isVisible = true
