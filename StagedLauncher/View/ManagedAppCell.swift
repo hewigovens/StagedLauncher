@@ -6,7 +6,7 @@ struct ManagedAppCell: View {
     // ObservedObject reference to the ViewModel for actions/helpers
     @ObservedObject var viewModel: ContentViewModel
     // Direct reference to AppStore needed for saving
-    @ObservedObject var appStore: AppStore
+    @ObservedObject var appStore: ManagedAppStore
     // Index of the row for alternating background
     var index: Int
 
@@ -70,29 +70,5 @@ struct ManagedAppCell: View {
             .foregroundColor(.red)
         }
         .padding(.vertical, 4) // Add vertical padding to each row
-    }
-}
-
-// Optional: Add a preview provider
-struct ManagedAppCell_Previews: PreviewProvider {
-    static var appStore: AppStore = {
-        let dummyAppStore = AppStore()
-        dummyAppStore.addApp(name: "Preview App", bundleIdentifier: "com.example.preview", bookmark: nil, category: "Other")
-        return dummyAppStore
-    }()
-
-    static var previews: some View {
-        let appBinding = Binding<ManagedApp>(
-            get: { Self.appStore.managedApps[0] },
-            set: { Self.appStore.managedApps[0] = $0 }
-        )
-        ManagedAppCell(
-            app: appBinding,
-            viewModel: ContentViewModel(appStore: Self.appStore),
-            appStore: Self.appStore, // Pass AppStore for saving
-            index: 0 // Provide a dummy index for preview
-        )
-        .padding() // Add padding around the cell for preview visibility
-        .frame(width: 350) // Give it a reasonable width for preview
     }
 }

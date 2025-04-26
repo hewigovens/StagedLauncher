@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     // Observe the AppStore passed from StagedLauncherApp
-    @ObservedObject var appStore: AppStore
+    @ObservedObject var appStore: ManagedAppStore
     // ViewModel is now passed in and observed
     @ObservedObject var viewModel: ContentViewModel
     // State to control the running apps sheet presentation
@@ -11,7 +11,7 @@ struct ContentView: View {
     @State private var selectedAppId: ManagedApp.ID? = nil
 
     // Updated initializer to accept both AppStore and ContentViewModel
-    init(appStore: AppStore, viewModel: ContentViewModel) {
+    init(appStore: ManagedAppStore, viewModel: ContentViewModel) {
         self.appStore = appStore
         self.viewModel = viewModel
     }
@@ -92,15 +92,5 @@ struct ContentView: View {
         .alert(isPresented: $viewModel.showingAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
-    }
-}
-
-// Updated Preview Provider
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        // Create dummy store and view model for preview
-        let previewAppStore = AppStore()
-        let previewViewModel = ContentViewModel(appStore: previewAppStore)
-        ContentView(appStore: previewAppStore, viewModel: previewViewModel)
     }
 }

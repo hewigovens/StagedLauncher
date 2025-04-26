@@ -5,7 +5,7 @@ import SwiftUI
 private var effectiveAppearanceObservationContext = 0
 
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    var launchManager: LaunchManager?
+    var launchCoordinator: LaunchCoordinator?
     private var appearanceObservation: NSKeyValueObservation? // Store the KVO token
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -35,7 +35,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     func applicationWillTerminate(_ notification: Notification) {
         Logger.info("AppDelegate: Application will terminate.")
         // Clean up timers when the app quits
-        launchManager?.stopMonitoring()
+        launchCoordinator?.stopMonitoring()
 
         // Invalidate KVO observation
         appearanceObservation?.invalidate()
@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         Logger.info("Updating dock icon for appearance: \(isDarkMode ? "Dark Mode" : "Light Mode")")
 
-        let iconName = isDarkMode ? "AppIconDark" : "AppIcon" // Use AppIcon for light mode
+        let iconName = isDarkMode ? "AppIconDark" : "AppIcon"
 
         if let icon = NSImage(named: iconName) {
             NSApp.applicationIconImage = icon

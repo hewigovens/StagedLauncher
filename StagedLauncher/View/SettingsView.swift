@@ -23,7 +23,6 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        // Use TabView for standard macOS settings structure
         TabView {
             // General Settings Tab
             Form { // Keep the Form for layout within the tab

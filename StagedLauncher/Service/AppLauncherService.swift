@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 
-class AppLauncherService {
+struct AppLauncherService {
     private weak var errorHandler: ErrorPresentable?
     private let notifier: NotificationService
 

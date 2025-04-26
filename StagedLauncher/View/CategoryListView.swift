@@ -90,21 +90,3 @@ struct CategoryListView: View {
         }
     }
 }
-
-#Preview {
-    let previewAppStore = AppStore()
-    // Add some dummy data to previewAppStore to generate categories
-    previewAppStore.managedApps = [
-        ManagedApp.new(name: "DevToolApp", bundleIdentifier: "com.example.devtool", bookmark: nil, category: "public.app-category.developer-tools"),
-        ManagedApp.new(name: "ProdApp", bundleIdentifier: "com.example.prodapp", bookmark: nil, category: "public.app-category.productivity"),
-        ManagedApp.new(name: "OtherApp", bundleIdentifier: "com.example.otherapp", bookmark: nil, category: "Other"),
-        ManagedApp.new(name: "AnotherDevApp", bundleIdentifier: "com.example.anotherdev", bookmark: nil, category: "public.app-category.developer-tools")
-    ]
-
-    let previewViewModel = ContentViewModel(appStore: previewAppStore)
-
-    // Set the initial selected category for preview
-    previewViewModel.selectedCategory = Constants.categoryAllApps
-
-    return CategoryListView(viewModel: previewViewModel)
-}

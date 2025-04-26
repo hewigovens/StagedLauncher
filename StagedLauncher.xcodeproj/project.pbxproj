@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BB85169F2DB7869200947994 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = BB85169E2DB7869200947994 /* Sparkle */; };
+		BB8516E02DBC9D0200947994 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = BB8516DF2DBC9D0200947994 /* Sentry */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB85169F2DB7869200947994 /* Sparkle in Frameworks */,
+				BB8516E02DBC9D0200947994 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,7 @@
 			name = StagedLauncher;
 			packageProductDependencies = (
 				BB85169E2DB7869200947994 /* Sparkle */,
+				BB8516DF2DBC9D0200947994 /* Sentry */,
 			);
 			productName = StagedLauncher;
 			productReference = BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */;
@@ -203,6 +206,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BB85169D2DB7869200947994 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BB35F97F2DAE4E8900957F5D /* Products */;
@@ -420,6 +424,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
+				SENTRY_DSN = "https://db2fa72bc0e816d054a93ccba226539a@o4509217729937408.ingest.us.sentry.io/4509218619785216";
 				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -450,6 +455,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
+				SENTRY_DSN = "https://db2fa72bc0e816d054a93ccba226539a@o4509217729937408.ingest.us.sentry.io/4509218619785216";
 				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -570,6 +576,14 @@
 				minimumVersion = 2.7.0;
 			};
 		};
+		BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.49.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -577,6 +591,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BB85169D2DB7869200947994 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		BB8516DF2DBC9D0200947994 /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

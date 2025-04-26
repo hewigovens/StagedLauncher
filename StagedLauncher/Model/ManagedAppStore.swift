@@ -3,7 +3,7 @@ import Foundation
 import SwiftUI
 
 /// Manages the list of managed applications and persists them.
-class AppStore: ObservableObject {
+class ManagedAppStore: ObservableObject {
     @Published var managedApps: [ManagedApp] = []
 
     init() {

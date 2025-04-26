@@ -4,7 +4,7 @@ import SwiftUI
 
 @MainActor
 class ContentViewModel: ObservableObject, ErrorPresentable {
-    @Published var appStore: AppStore
+    @Published var appStore: ManagedAppStore
     @Published var showingAlert = false
     @Published var alertMessage = ""
 
@@ -44,7 +44,7 @@ class ContentViewModel: ObservableObject, ErrorPresentable {
 
     // --- End Category Formatting ---
 
-    init(appStore: AppStore) {
+    init(appStore: ManagedAppStore) {
         self.appStore = appStore
     }
 

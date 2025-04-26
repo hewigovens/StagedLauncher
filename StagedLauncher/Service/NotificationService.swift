@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
 
-class NotificationService {
+struct NotificationService {
     static let shared = NotificationService()
     private let center = UNUserNotificationCenter.current()
 
