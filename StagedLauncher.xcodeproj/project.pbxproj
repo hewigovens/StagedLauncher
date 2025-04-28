@@ -6,13 +6,50 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXCopyFilesBuildPhase section */
+		BBFDF5002DBF39A300935295 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BBFDF4FD2DBF38EE00935295 /* Exceptions for "StagedLauncher" folder in "StagedLauncher" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets/AppIcon.icns,
+				"Assets/Preview Assets.xcassets",
+			);
+			target = BB35F97D2DAE4E8900957F5D /* StagedLauncher */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		BBFDF5022DBF39A700935295 /* Exceptions for "StagedLauncher" folder in "Copy Files" phase from "StagedLauncher" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = BBFDF5002DBF39A300935295 /* CopyFiles */;
+			membershipExceptions = (
+				Assets/AppIcon.icns,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BB35F9802DAE4E8900957F5D /* StagedLauncher */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BBFDF4FD2DBF38EE00935295 /* Exceptions for "StagedLauncher" folder in "StagedLauncher" target */,
+				BBFDF5022DBF39A700935295 /* Exceptions for "StagedLauncher" folder in "Copy Files" phase from "StagedLauncher" target */,
+			);
 			path = StagedLauncher;
 			sourceTree = "<group>";
 		};
@@ -54,7 +91,8 @@
 			buildPhases = (
 				BB35F97A2DAE4E8900957F5D /* Sources */,
 				BB35F97B2DAE4E8900957F5D /* Frameworks */,
-				BB35F97C2DAE4E8900957F5D /* Resources */,
+				BBFDF4FC2DBF38EE00935295 /* Resources */,
+				BBFDF5002DBF39A300935295 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -107,7 +145,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		BB35F97C2DAE4E8900957F5D /* Resources */ = {
+		BBFDF4FC2DBF38EE00935295 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -131,8 +169,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = AppIconDark;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CFBundleIconFile = icon.icns;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -195,8 +236,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = AppIconDark;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CFBundleIconFile = icon.icns;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -251,8 +295,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
+				CFBundleIconFile = AppIcon;
+				CFBundleIconName = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -284,8 +328,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
+				CFBundleIconFile = AppIcon;
+				CFBundleIconName = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
