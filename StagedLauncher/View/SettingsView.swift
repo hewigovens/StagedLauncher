@@ -1,5 +1,4 @@
 import SwiftUI
-import Sparkle
 
 struct SettingsView: View {
     // Use AppStorage to bind the UI toggle state to UserDefaults
@@ -9,16 +8,12 @@ struct SettingsView: View {
     )
     @AppStorage(Constants.enableNotificationsKey) private var enableNotifications: Bool = false
     @AppStorage(Constants.enabledQuitSelfKey) private var enabledQuitSelf: Bool = UserDefaults.standard.bool(forKey: Constants.enabledQuitSelfKey)
-    // Add AppStorage for automatic update checks
-    @AppStorage("SUAutomaticallyUpdate") private var automaticallyChecksForUpdates: Bool = true
 
     // Controller for managing login item status
     @StateObject private var loginItemService = LoginItemService.shared
-    let updaterController: SPUStandardUpdaterController
     private let defaults: UserDefaults
 
-    init(updaterController: SPUStandardUpdaterController, defaults: UserDefaults = .standard) {
-        self.updaterController = updaterController
+    init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
     }
 
@@ -31,18 +26,6 @@ struct SettingsView: View {
                         loginItemService.toggleLaunchAtLogin()
                     }
                     .help("When on, Staged Launcher will be added to your macOS Login Items and launch at each login.")
-                    .toggleStyle(.checkbox)
-
-                // Replace Button with Toggle for Automatic Updates
-                Toggle("Check for Updates Automatically", isOn: $automaticallyChecksForUpdates)
-                    .onChange(of: automaticallyChecksForUpdates) { _, newValue in
-                        updaterController.updater.automaticallyChecksForUpdates = newValue
-                        if newValue {
-                            updaterController.startUpdater()
-                            updaterController.checkForUpdates(nil)
-                        }
-                    }
-                    .help("When enabled, Staged Launcher will periodically check for new versions in the background.")
                     .toggleStyle(.checkbox)
 
                 Divider()
@@ -66,7 +49,6 @@ struct SettingsView: View {
                     }
                     .help("When on, you’ll get a notification in Notification Center after delayed app launched.")
                     .toggleStyle(.checkbox)
-
 
                 Toggle("Quit When All Apps Have Launched", isOn: $enabledQuitSelf)
                     .onChange(of: enabledQuitSelf) { _, newValue in

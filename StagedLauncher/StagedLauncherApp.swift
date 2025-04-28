@@ -1,5 +1,4 @@
 import SwiftUI
-import Sparkle
 import Sentry
 
 @main
@@ -18,7 +17,7 @@ struct StagedLauncherApp: App {
         }
         Settings {
             // Pass dependencies from AppCoordinator to SettingsView
-            SettingsView(updaterController: appCoordinator.updaterController)
+            SettingsView()
                 .environmentObject(appCoordinator.appStore)
                 .environmentObject(appCoordinator.launchCoordinator)
                 .navigationTitle("Preferences")

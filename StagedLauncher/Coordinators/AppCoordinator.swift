@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 import Sentry
-import Sparkle
 
 /// Central coordinator for managing core application state, logic, and third-party services.
 @MainActor
@@ -13,9 +12,6 @@ class AppCoordinator: ObservableObject {
     @Published var launchCoordinator: LaunchCoordinator
     // Keep AppLauncherService private if not needed externally
     private var appLauncherService: AppLauncherService
-    
-    // MARK: - Service Components
-    let updaterController: SPUStandardUpdaterController
     
     init() {
         // --- Initialize Core Components (Order matters) ---
@@ -45,9 +41,6 @@ class AppCoordinator: ObservableObject {
             }
         }
         
-        // Sparkle
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        
         // --- Final Setup ---
         Logger.info("AppCoordinator initialized.")
         coordinator.startMonitoring()
@@ -55,6 +48,5 @@ class AppCoordinator: ObservableObject {
     
     // MARK: - Service Methods
     func checkForUpdates() {
-        updaterController.checkForUpdates(nil)
     }
 }
