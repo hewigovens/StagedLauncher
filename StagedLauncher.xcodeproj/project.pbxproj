@@ -6,24 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXCopyFilesBuildPhase section */
-		BBFDF5002DBF39A300935295 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBFDF5D82DBF402600935295 /* StagedLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StagedLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BB35F9802DAE4E8900957F5D /* StagedLauncher */ = {
+		BBFDF5DA2DBF402600935295 /* StagedLauncher */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = StagedLauncher;
 			sourceTree = "<group>";
@@ -31,7 +19,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		BB35F97B2DAE4E8900957F5D /* Frameworks */ = {
+		BBFDF5D52DBF402600935295 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -41,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BB35F9752DAE4E8900957F5D = {
+		BBFDF5CF2DBF402600935295 = {
 			isa = PBXGroup;
 			children = (
-				BB35F9802DAE4E8900957F5D /* StagedLauncher */,
-				BB35F97F2DAE4E8900957F5D /* Products */,
+				BBFDF5DA2DBF402600935295 /* StagedLauncher */,
+				BBFDF5D92DBF402600935295 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		BB35F97F2DAE4E8900957F5D /* Products */ = {
+		BBFDF5D92DBF402600935295 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */,
+				BBFDF5D82DBF402600935295 /* StagedLauncher.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -60,67 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BB35F97D2DAE4E8900957F5D /* StagedLauncher */ = {
+		BBFDF5D72DBF402600935295 /* StagedLauncher */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BB35F9A32DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncher" */;
+			buildConfigurationList = BBFDF5E72DBF402700935295 /* Build configuration list for PBXNativeTarget "StagedLauncher" */;
 			buildPhases = (
-				BB35F97A2DAE4E8900957F5D /* Sources */,
-				BB35F97B2DAE4E8900957F5D /* Frameworks */,
-				BBFDF4FC2DBF38EE00935295 /* Resources */,
-				BBFDF5002DBF39A300935295 /* CopyFiles */,
+				BBFDF5D42DBF402600935295 /* Sources */,
+				BBFDF5D52DBF402600935295 /* Frameworks */,
+				BBFDF5D62DBF402600935295 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BB35F9802DAE4E8900957F5D /* StagedLauncher */,
+				BBFDF5DA2DBF402600935295 /* StagedLauncher */,
 			);
 			name = StagedLauncher;
 			packageProductDependencies = (
 			);
 			productName = StagedLauncher;
-			productReference = BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */;
+			productReference = BBFDF5D82DBF402600935295 /* StagedLauncher.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		BB35F9762DAE4E8900957F5D /* Project object */ = {
+		BBFDF5D02DBF402600935295 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
-					BB35F97D2DAE4E8900957F5D = {
+					BBFDF5D72DBF402600935295 = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
-			buildConfigurationList = BB35F9792DAE4E8900957F5D /* Build configuration list for PBXProject "StagedLauncher" */;
+			buildConfigurationList = BBFDF5D32DBF402600935295 /* Build configuration list for PBXProject "StagedLauncher" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = BB35F9752DAE4E8900957F5D;
+			mainGroup = BBFDF5CF2DBF402600935295;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = BB35F97F2DAE4E8900957F5D /* Products */;
+			productRefGroup = BBFDF5D92DBF402600935295 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BB35F97D2DAE4E8900957F5D /* StagedLauncher */,
+				BBFDF5D72DBF402600935295 /* StagedLauncher */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		BBFDF4FC2DBF38EE00935295 /* Resources */ = {
+		BBFDF5D62DBF402600935295 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -130,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		BB35F97A2DAE4E8900957F5D /* Sources */ = {
+		BBFDF5D42DBF402600935295 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -140,10 +125,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		BB35F9A12DAE4E8A00957F5D /* Debug */ = {
+		BBFDF5E52DBF402700935295 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -202,10 +188,11 @@
 			};
 			name = Debug;
 		};
-		BB35F9A22DAE4E8A00957F5D /* Release */ = {
+		BBFDF5E62DBF402700935295 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -256,17 +243,17 @@
 			};
 			name = Release;
 		};
-		BB35F9A42DAE4E8A00957F5D /* Debug */ = {
+		BBFDF5E82DBF402700935295 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
 				DEVELOPMENT_TEAM = V28VJH6B6S;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -281,21 +268,20 @@
 				PRODUCT_NAME = "Staged Launcher";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
 			};
 			name = Debug;
 		};
-		BB35F9A52DAE4E8A00957F5D /* Release */ = {
+		BBFDF5E92DBF402700935295 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
 				DEVELOPMENT_TEAM = V28VJH6B6S;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -310,32 +296,31 @@
 				PRODUCT_NAME = "Staged Launcher";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BB35F9792DAE4E8900957F5D /* Build configuration list for PBXProject "StagedLauncher" */ = {
+		BBFDF5D32DBF402600935295 /* Build configuration list for PBXProject "StagedLauncher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BB35F9A12DAE4E8A00957F5D /* Debug */,
-				BB35F9A22DAE4E8A00957F5D /* Release */,
+				BBFDF5E52DBF402700935295 /* Debug */,
+				BBFDF5E62DBF402700935295 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BB35F9A32DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncher" */ = {
+		BBFDF5E72DBF402700935295 /* Build configuration list for PBXNativeTarget "StagedLauncher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BB35F9A42DAE4E8A00957F5D /* Debug */,
-				BB35F9A52DAE4E8A00957F5D /* Release */,
+				BBFDF5E82DBF402700935295 /* Debug */,
+				BBFDF5E92DBF402700935295 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = BB35F9762DAE4E8900957F5D /* Project object */;
+	rootObject = BBFDF5D02DBF402600935295 /* Project object */;
 }
