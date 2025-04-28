@@ -22,34 +22,9 @@
 		BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BBFDF4FD2DBF38EE00935295 /* Exceptions for "StagedLauncher" folder in "StagedLauncher" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Assets/AppIcon.icns,
-				"Assets/Preview Assets.xcassets",
-			);
-			target = BB35F97D2DAE4E8900957F5D /* StagedLauncher */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		BBFDF5022DBF39A700935295 /* Exceptions for "StagedLauncher" folder in "Copy Files" phase from "StagedLauncher" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = BBFDF5002DBF39A300935295 /* CopyFiles */;
-			membershipExceptions = (
-				Assets/AppIcon.icns,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BB35F9802DAE4E8900957F5D /* StagedLauncher */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BBFDF4FD2DBF38EE00935295 /* Exceptions for "StagedLauncher" folder in "StagedLauncher" target */,
-				BBFDF5022DBF39A700935295 /* Exceptions for "StagedLauncher" folder in "Copy Files" phase from "StagedLauncher" target */,
-			);
 			path = StagedLauncher;
 			sourceTree = "<group>";
 		};
@@ -169,11 +144,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = AppIconDark;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CFBundleIconFile = icon.icns;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -236,11 +206,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = AppIconDark;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CFBundleIconFile = icon.icns;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -295,8 +260,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CFBundleIconFile = AppIcon;
-				CFBundleIconName = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -304,7 +267,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
 				DEVELOPMENT_TEAM = V28VJH6B6S;
-				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -317,7 +279,6 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
-				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
@@ -328,8 +289,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CFBundleIconFile = AppIcon;
-				CFBundleIconName = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -337,7 +296,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
 				DEVELOPMENT_TEAM = V28VJH6B6S;
-				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
@@ -350,7 +308,6 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
-				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
