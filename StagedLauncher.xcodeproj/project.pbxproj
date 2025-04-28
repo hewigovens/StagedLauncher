@@ -6,31 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		BB8516E02DBC9D0200947994 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = BB8516DF2DBC9D0200947994 /* Sentry */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		BB35F9902DAE4E8A00957F5D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BB35F9762DAE4E8900957F5D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB35F97D2DAE4E8900957F5D;
-			remoteInfo = StagedLauncher;
-		};
-		BB35F99A2DAE4E8A00957F5D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BB35F9762DAE4E8900957F5D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BB35F97D2DAE4E8900957F5D;
-			remoteInfo = StagedLauncher;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB35F98F2DAE4E8A00957F5D /* StagedLauncherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StagedLauncherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BB35F9992DAE4E8A00957F5D /* StagedLauncherUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StagedLauncherUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,35 +16,10 @@
 			path = StagedLauncher;
 			sourceTree = "<group>";
 		};
-		BB35F9922DAE4E8A00957F5D /* StagedLauncherTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = StagedLauncherTests;
-			sourceTree = "<group>";
-		};
-		BB35F99C2DAE4E8A00957F5D /* StagedLauncherUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = StagedLauncherUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		BB35F97B2DAE4E8900957F5D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BB8516E02DBC9D0200947994 /* Sentry in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB35F98C2DAE4E8A00957F5D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB35F9962DAE4E8A00957F5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -81,8 +33,6 @@
 			isa = PBXGroup;
 			children = (
 				BB35F9802DAE4E8900957F5D /* StagedLauncher */,
-				BB35F9922DAE4E8A00957F5D /* StagedLauncherTests */,
-				BB35F99C2DAE4E8A00957F5D /* StagedLauncherUITests */,
 				BB35F97F2DAE4E8900957F5D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,8 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */,
-				BB35F98F2DAE4E8A00957F5D /* StagedLauncherTests.xctest */,
-				BB35F9992DAE4E8A00957F5D /* StagedLauncherUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,57 +65,10 @@
 			);
 			name = StagedLauncher;
 			packageProductDependencies = (
-				BB8516DF2DBC9D0200947994 /* Sentry */,
 			);
 			productName = StagedLauncher;
 			productReference = BB35F97E2DAE4E8900957F5D /* Staged Launcher.app */;
 			productType = "com.apple.product-type.application";
-		};
-		BB35F98E2DAE4E8A00957F5D /* StagedLauncherTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BB35F9A62DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncherTests" */;
-			buildPhases = (
-				BB35F98B2DAE4E8A00957F5D /* Sources */,
-				BB35F98C2DAE4E8A00957F5D /* Frameworks */,
-				BB35F98D2DAE4E8A00957F5D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BB35F9912DAE4E8A00957F5D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				BB35F9922DAE4E8A00957F5D /* StagedLauncherTests */,
-			);
-			name = StagedLauncherTests;
-			packageProductDependencies = (
-			);
-			productName = StagedLauncherTests;
-			productReference = BB35F98F2DAE4E8A00957F5D /* StagedLauncherTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		BB35F9982DAE4E8A00957F5D /* StagedLauncherUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BB35F9A92DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncherUITests" */;
-			buildPhases = (
-				BB35F9952DAE4E8A00957F5D /* Sources */,
-				BB35F9962DAE4E8A00957F5D /* Frameworks */,
-				BB35F9972DAE4E8A00957F5D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BB35F99B2DAE4E8A00957F5D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				BB35F99C2DAE4E8A00957F5D /* StagedLauncherUITests */,
-			);
-			name = StagedLauncherUITests;
-			packageProductDependencies = (
-			);
-			productName = StagedLauncherUITests;
-			productReference = BB35F9992DAE4E8A00957F5D /* StagedLauncherUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -182,14 +83,6 @@
 					BB35F97D2DAE4E8900957F5D = {
 						CreatedOnToolsVersion = 16.2;
 					};
-					BB35F98E2DAE4E8A00957F5D = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = BB35F97D2DAE4E8900957F5D;
-					};
-					BB35F9982DAE4E8A00957F5D = {
-						CreatedOnToolsVersion = 16.2;
-						TestTargetID = BB35F97D2DAE4E8900957F5D;
-					};
 				};
 			};
 			buildConfigurationList = BB35F9792DAE4E8900957F5D /* Build configuration list for PBXProject "StagedLauncher" */;
@@ -202,7 +95,6 @@
 			mainGroup = BB35F9752DAE4E8900957F5D;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BB35F97F2DAE4E8900957F5D /* Products */;
@@ -210,28 +102,12 @@
 			projectRoot = "";
 			targets = (
 				BB35F97D2DAE4E8900957F5D /* StagedLauncher */,
-				BB35F98E2DAE4E8A00957F5D /* StagedLauncherTests */,
-				BB35F9982DAE4E8A00957F5D /* StagedLauncherUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		BB35F97C2DAE4E8900957F5D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB35F98D2DAE4E8A00957F5D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB35F9972DAE4E8A00957F5D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -248,34 +124,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BB35F98B2DAE4E8A00957F5D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BB35F9952DAE4E8A00957F5D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		BB35F9912DAE4E8A00957F5D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB35F97D2DAE4E8900957F5D /* StagedLauncher */;
-			targetProxy = BB35F9902DAE4E8A00957F5D /* PBXContainerItemProxy */;
-		};
-		BB35F99B2DAE4E8A00957F5D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BB35F97D2DAE4E8900957F5D /* StagedLauncher */;
-			targetProxy = BB35F99A2DAE4E8A00957F5D /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BB35F9A12DAE4E8A00957F5D /* Debug */ = {
@@ -283,6 +132,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -346,6 +196,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -403,10 +254,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
+				DEVELOPMENT_TEAM = V28VJH6B6S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
@@ -420,10 +273,10 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
-				SENTRY_DSN = "https://db2fa72bc0e816d054a93ccba226539a@o4509217729937408.ingest.us.sentry.io/4509218619785216";
 				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
 			};
 			name = Debug;
 		};
@@ -434,10 +287,12 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				ASSETCATALOG_COMPILER_STANDALONE_ICON_BEHAVIOR = none;
 				CODE_SIGN_ENTITLEMENTS = StagedLauncher/StagedLauncher.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"StagedLauncher/Assets\"";
+				DEVELOPMENT_TEAM = V28VJH6B6S;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Staged Launcher";
@@ -451,74 +306,10 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncher;
 				PRODUCT_NAME = "Staged Launcher";
-				SENTRY_DSN = "https://db2fa72bc0e816d054a93ccba226539a@o4509217729937408.ingest.us.sentry.io/4509218619785216";
 				SUFeedURL = "https://raw.githubusercontent.com/hewigovens/StagedLauncher/refs/heads/main/docs/appcast.xml";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		BB35F9A72DAE4E8A00957F5D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncherTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StagedLauncher";
-			};
-			name = Debug;
-		};
-		BB35F9A82DAE4E8A00957F5D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncherTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/StagedLauncher";
-			};
-			name = Release;
-		};
-		BB35F9AA2DAE4E8A00957F5D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncherUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = StagedLauncher;
-			};
-			name = Debug;
-		};
-		BB35F9AB2DAE4E8A00957F5D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.hewig.StagedLauncherUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = StagedLauncher;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/StagedLauncher.app/Contents/MacOS/StagedLauncher";
 			};
 			name = Release;
 		};
@@ -543,44 +334,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BB35F9A62DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncherTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BB35F9A72DAE4E8A00957F5D /* Debug */,
-				BB35F9A82DAE4E8A00957F5D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BB35F9A92DAE4E8A00957F5D /* Build configuration list for PBXNativeTarget "StagedLauncherUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BB35F9AA2DAE4E8A00957F5D /* Debug */,
-				BB35F9AB2DAE4E8A00957F5D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.49.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		BB8516DF2DBC9D0200947994 /* Sentry */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BB8516DE2DBC9D0200947994 /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
-			productName = Sentry;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BB35F9762DAE4E8900957F5D /* Project object */;
 }
