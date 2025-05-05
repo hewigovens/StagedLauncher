@@ -4,25 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staged Launcher - Launch Your Apps Seamlessly</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #007AFF; /* Apple Blue */
+            --primary-dark: #0062cc; /* Darker Blue */
             --secondary-color: #5AC8FA; /* Lighter Blue */
+            --accent-color: #34C759; /* Apple Green */
             --feature-title-blue: #0A84FF; /* Slightly different blue for feature titles */
             --background-light: #f8f9fa;
             --background-white: #ffffff;
+            --background-gradient: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             --text-primary: #1d1d1f; /* Near Black */
             --text-secondary: #6e6e73; /* Gray */
             --border-color: #d2d2d7;
             --button-dark: #333333; /* Dark Gray for Download Button */
             --button-dark-hover: #555555;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--background-white);
+            background-image: var(--background-gradient);
             color: var(--text-primary);
             line-height: 1.6;
         }
@@ -34,53 +47,102 @@
 
         /* Header */
         header {
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid rgba(210, 210, 215, 0.5);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             position: sticky;
             top: 0;
             z-index: 10;
+            box-shadow: var(--shadow-sm);
         }
 
         header .logo {
             font-weight: 600;
             font-size: 1.2rem;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        
+        header .logo:hover {
+            transform: scale(1.02);
         }
 
         header .logo img {
-            height: 24px; /* Adjust size as needed */
+            height: 32px; /* Slightly larger icon */
             vertical-align: middle;
-            margin-right: 8px;
+            margin-right: 10px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
-        nav a {
-            color: var(--primary-color);
-            text-decoration: none;
-            margin-left: 1.5rem;
-            font-size: 0.95rem;
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.75rem;
         }
+        
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.2s ease;
+        }
+        
         nav a:hover {
-            text-decoration: underline;
+            color: var(--primary-color);
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.2s ease;
+        }
+        
+        nav a:hover::after {
+            width: 100%;
         }
 
         /* Hero Section */
         .hero {
-            /* background: linear-gradient(180deg, #e0f7ff 0%, var(--background-white) 100%); */
-            padding: 5rem 2rem 4rem 2rem;
+            background: linear-gradient(160deg, rgba(90, 200, 250, 0.05) 0%, rgba(0, 122, 255, 0.05) 100%);
+            padding: 7rem 2rem 6rem 2rem;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(90, 200, 250, 0.05) 0%, transparent 60%);
+            z-index: -1;
         }
 
         .hero h1 {
             margin-bottom: 0.75rem;
-            font-size: 3rem;
-            font-weight: 600;
+            font-size: 3.5rem;
+            font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
         }
 
         .hero p {
@@ -90,6 +152,12 @@
             margin-left: auto;
             margin-right: auto;
             color: var(--text-secondary);
+            animation: fadeIn 1s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Main Container */
@@ -132,50 +200,153 @@
         }
 
         .feature-item {
-            background-color: var(--background-light);
-            padding: 1.5rem;
-            border-radius: 12px; /* More rounded */
+            background-color: var(--background-white);
+            padding: 2rem;
+            border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-color), #5856D6);
+            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
         }
 
         .feature-item h3 {
             margin-top: 0;
-            margin-bottom: 0.5rem;
-            color: var(--feature-title-blue);
-            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+            color: #333333;
+            font-size: 1.25rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
         }
+        
+        .feature-item h3::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 10px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+        }
+        
         .feature-item p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            line-height: 1.7;
         }
 
         /* Screenshots */
         .screenshots {
             text-align: center;
+            margin-top: 3rem;
         }
+        
         .screenshots p:first-of-type {
              color: var(--text-secondary);
              margin-bottom: 2rem;
+             font-size: 1.1rem;
+        }
+        
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .screenshot-container {
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .screenshot-container:hover {
+            transform: scale(1.02);
+        }
+        
+        .screenshot-container.full-width {
+            grid-column: 1 / -1;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .screenshot-container.smaller {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .screenshots img {
-            max-width: 90%; /* Larger screenshots */
+            width: 100%;
             height: auto;
             border: 1px solid var(--border-color);
-            border-radius: 8px; /* Consistent rounding */
-            margin-top: 1rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: var(--radius-md); /* Consistent rounding */
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            object-fit: contain;
+        }
+        
+        .screenshot-container.smaller img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .screenshots img:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        @media (max-width: 768px) {
+            .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .screenshot-container.full-width {
+                max-width: 100%;
+            }
         }
 
         /* Download Section */
         .download-section {
             text-align: center;
-            padding: 3rem 2rem;
-            background-color: var(--background-light);
-            border-radius: 12px;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(90, 200, 250, 0.1) 100%);
+            border-radius: var(--radius-lg);
             margin-top: 4rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(210, 210, 215, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .download-section::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(90, 200, 250, 0.1) 0%, transparent 70%);
+            top: -150px;
+            right: -150px;
+            z-index: 0;
         }
         .download-section h2 {
              margin-bottom: 1rem;
@@ -193,25 +364,54 @@
             display: inline-flex; /* Align icon and text */
             align-items: center;
             justify-content: center;
-            padding: 14px 30px;
+            padding: 16px 32px;
             font-size: 1.1rem;
-            font-weight: 500; /* Medium weight */
+            font-weight: 600; /* Semibold weight */
             color: var(--background-white);
-            background-color: var(--button-dark); /* Use dark gray */
+            background-color: var(--primary-color); /* Use Apple Blue */
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             text-decoration: none;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.7s ease;
+            z-index: -1;
         }
 
         .cta-button:hover {
-            background-color: var(--button-dark-hover); /* Darker gray on hover */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background-color: var(--primary-dark); /* Darker blue on hover */
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
         }
+        
+        .cta-button:hover::before {
+            left: 100%;
+        }
+        
         .cta-button:active {
-            transform: scale(0.98);
+            transform: translateY(0) scale(0.98);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        /* Download button in nav should be smaller */
+        nav .cta-button {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            background-color: var(--primary-color);
         }
 
         /* Style for icon inside button */
@@ -224,20 +424,32 @@
 
         /* Social Links */
         .social-links {
-            margin-top: 1rem;
-            margin-bottom: 1rem; /* Add space before copyright */
+            margin-top: 2rem;
+            margin-bottom: 1.5rem; /* Add space before copyright */
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
         }
 
         .social-links a {
             color: var(--text-secondary);
-            margin: 0 0.75rem;
-            display: inline-block; /* Needed for transform */
-            transition: color 0.2s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
 
         .social-links a:hover {
-            color: var(--primary-color);
-            transform: scale(1.1);
+            color: var(--background-white);
+            background-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
         }
 
         .social-links svg {
@@ -250,12 +462,53 @@
         /* Footer */
         footer {
             text-align: center;
-            margin-top: 4rem;
-            padding: 2rem;
+            margin-top: 5rem;
+            padding: 3rem 2rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
             border-top: 1px solid var(--border-color);
             background-color: var(--background-light);
+            position: relative;
+        }
+        
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            nav {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
@@ -270,7 +523,7 @@
             <a href="#about">About</a>
             <a href="#features">Features</a>
             <a href="#screenshots">Screenshots</a>
-            <a href="#download" class="cta-button" style="background-color: var(--primary-color); padding: 8px 16px; font-size: 0.9rem;">Download</a>
+            <a href="#download" class="cta-button">Download</a>
         </nav>
     </header>
 
@@ -288,10 +541,9 @@
         <section id="about" class="section">
             <h2>About</h2>
             <p>Macs rarely reboot, but when they do, every login item slows you down.
-                Staged Launcher fires up the essentials first, then staggers non‑critical apps like wallpaper switchers, window managers, and VPNs.
-                Everything you need still runs—just a few moments later and out of sight.
-                <p>You get: faster boots and a smoother desktop, all from one lightweight macOS tool.</p>
-            </p>
+                Staged Launcher fires up the essentials first, then staggers non‑critical apps like wallpaper switchers, window managers, and VPNs.
+                Everything you need still runs—just a few moments later and out of sight.</p>
+            <p>You get: faster boots and a smoother desktop, all from one lightweight macOS tool.</p>
         </section>
 
         <section id="features" class="section">
@@ -315,10 +567,24 @@
         <section id="screenshots" class="section">
             <h2>See Staged Launcher in Action</h2>
             <div class="screenshots">
-                <img src="assets/main_window.png" alt="Staged Launcher Main Interface">
-                <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.5rem; margin-bottom: 2rem;">Intuitive Main Application Window</p>
-                <img src="assets/running_apps_window.png" alt="Staged Launcher Settings">
-                 <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.5rem;">Easy Configuration Settings</p>
+                <p>See how Staged Launcher helps you organize your startup applications with a clean, native macOS interface</p>
+                
+                <div class="screenshots-grid">
+                    <div class="screenshot-container full-width">
+                        <img src="assets/main_window.png" alt="Staged Launcher Main Interface">
+                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Intuitive Main Application Window</p>
+                    </div>
+                    
+                    <div class="screenshot-container">
+                        <img src="assets/running_apps_window.png" alt="Staged Launcher Settings">
+                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Easy Configuration Settings</p>
+                    </div>
+                    
+                    <div class="screenshot-container smaller">
+                        <img src="assets/notifications.png" alt="Staged Launcher Notifications">
+                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Unobtrusive Notifications</p>
+                    </div>
+                </div>
             </div>
         </section>
 
