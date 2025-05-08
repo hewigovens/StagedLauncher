@@ -6,8 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BB66A9C42DCCDEFD0083A538 /* LSAppCategory in Frameworks */ = {isa = PBXBuildFile; productRef = BB66A9C32DCCDEFD0083A538 /* LSAppCategory */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		BBFDF5D82DBF402600935295 /* StagedLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StagedLauncher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBFDF5D82DBF402600935295 /* StagedLauncher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = StagedLauncher.app; path = "Staged Launcher.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB66A9C42DCCDEFD0083A538 /* LSAppCategory in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = StagedLauncher;
 			packageProductDependencies = (
+				BB66A9C32DCCDEFD0083A538 /* LSAppCategory */,
 			);
 			productName = StagedLauncher;
 			productReference = BBFDF5D82DBF402600935295 /* StagedLauncher.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = BBFDF5CF2DBF402600935295;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BB66A9C22DCCDEFD0083A538 /* XCRemoteSwiftPackageReference "LSAppCategory" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BBFDF5D92DBF402600935295 /* Products */;
 			projectDirPath = "";
@@ -321,6 +330,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BB66A9C22DCCDEFD0083A538 /* XCRemoteSwiftPackageReference "LSAppCategory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:hewigovens/LSAppCategory.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BB66A9C32DCCDEFD0083A538 /* LSAppCategory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BB66A9C22DCCDEFD0083A538 /* XCRemoteSwiftPackageReference "LSAppCategory" */;
+			productName = LSAppCategory;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BBFDF5D02DBF402600935295 /* Project object */;
 }
