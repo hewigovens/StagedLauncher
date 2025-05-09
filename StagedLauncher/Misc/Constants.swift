@@ -23,4 +23,8 @@ enum Constants {
     static let enableNotificationsKey = "enableLaunchNotifications"
 
     static let enabledQuitSelfKey = "enableQuitSelf"
+    
+    static let sponsorLink = "https://github.com/sponsors/hewigovens?frequency=one-time"
+    
+    static let githubLink = "https://github.com/hewigovens/StagedLauncher"
 }

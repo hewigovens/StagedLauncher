@@ -29,7 +29,6 @@ struct CategoryListView: View {
             }
         }
         .navigationTitle("Categories")
-        // Add translucent background material
         .background(.ultraThinMaterial)
     }
 

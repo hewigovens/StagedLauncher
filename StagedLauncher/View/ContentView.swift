@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ContentView: View {
     // Observe the AppStore passed from StagedLauncherApp
@@ -92,5 +93,53 @@ struct ContentView: View {
         .alert(isPresented: $viewModel.showingAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
+        // Add footer as a status bar at the bottom
+        .overlay(alignment: .bottom) {
+            footerView
+        }
+    }
+    
+    // Footer view styled as a status bar
+    private var footerView: some View {
+        HStack {
+            Spacer()
+            
+            Button(action: {
+                NSWorkspace.shared.open(URL(string: Constants.sponsorLink)!)
+            }) {
+                Label("Sponsor", systemImage: "heart.circle.fill")
+                    .font(.footnote)
+            }
+            .buttonStyle(.plain)
+            .foregroundColor(.secondary)
+            
+            Divider()
+                .frame(height: 12)
+                .padding(.horizontal, 8)
+            
+            Button(action : {
+                NSWorkspace.shared.open(URL(string: Constants.githubLink)!)
+            }) {
+                Text("Version \(getAppVersion())")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            }
+            .buttonStyle(.plain)
+            .foregroundColor(.secondary)
+            
+            
+            
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+        .background(Color(NSColor.windowBackgroundColor))
+        .overlay(Divider(), alignment: .top)
+    }
+    
+    // Helper function to get app version
+    private func getAppVersion() -> String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return "\(version) (\(build))"
     }
 }
