@@ -2,28 +2,20 @@ import SwiftUI
 import AppKit
 
 struct ContentView: View {
-    // Observe the AppStore passed from StagedLauncherApp
     @ObservedObject var appStore: ManagedAppStore
-    // ViewModel is now passed in and observed
     @ObservedObject var viewModel: ContentViewModel
-    // State to control the running apps sheet presentation
     @State private var showingRunningAppsSheet = false
-    // State to track the selected app in the detail list
     @State private var selectedAppId: ManagedApp.ID? = nil
 
-    // Updated initializer to accept both AppStore and ContentViewModel
     init(appStore: ManagedAppStore, viewModel: ContentViewModel) {
         self.appStore = appStore
         self.viewModel = viewModel
     }
 
     var body: some View {
-        // Use NavigationSplitView for Sidebar + Detail layout
         NavigationSplitView {
-            // Use the extracted CategoryListView for the sidebar
             CategoryListView(viewModel: viewModel)
         } detail: {
-            // Wrap content in a VStack to hold either List or Placeholder
             VStack {
                 if viewModel.filteredApps.isEmpty {
                     Spacer()
@@ -33,14 +25,10 @@ struct ContentView: View {
                         .padding(.top, -10)
                     Spacer()
                 } else {
-                    // --- Detail: Filtered App List ---
-                    // Add selection binding to the List
                     List(selection: $selectedAppId) {
-                        // Wrap ForEach in a Group and apply .id to the Group
                         Group {
                             ForEach(viewModel.filteredApps.indices, id: \.self) { index in
                                 let app = viewModel.filteredApps[index]
-                                // Find the binding for the specific app in the original AppStore array
                                 if let originalIndex = appStore.managedApps.firstIndex(where: { $0.id == app.id }) {
                                     ManagedAppCell(
                                         app: $appStore.managedApps[originalIndex],
@@ -48,19 +36,19 @@ struct ContentView: View {
                                         appStore: appStore,
                                         index: index
                                     )
-                                    // Tag the row with the app's ID for selection
                                     .tag(app.id)
                                 }
                             }
-                            .onDelete(perform: viewModel.removeFilteredApps) // Need a new method for deleting from filtered list
+                            .onDelete(perform: viewModel.removeFilteredApps)
                         }
-                        .id(viewModel.selectedCategory) // Apply ID to the Group
+                        .id(viewModel.selectedCategory)
                     }
-                    // Add translucent background material (apply only when list is shown)
-                    .background(.ultraThinMaterial)
+                    .scrollContentBackground(.hidden)
+                    .background(VisualEffectView(material: .contentBackground))
+                    .listRowSeparator(.visible)
+                    .listStyle(.inset)
                 }
             }
-            // Use the formatted category name for the title
             .navigationTitle(viewModel.formatCategoryName(viewModel.selectedCategory ?? "All Apps"))
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
@@ -78,32 +66,28 @@ struct ContentView: View {
                         Label("Add Application from Running", systemImage: "iphone.app.switcher")
                     }
                 }
-                // Toolbar item using SettingsLink
                 ToolbarItem(placement: .primaryAction) {
                     SettingsLink {
                         Label("Settings", systemImage: "gear")
                     }
                 }
             }
-            // Sheet modifier to present the running apps list
             .sheet(isPresented: $showingRunningAppsSheet) {
                 RunningAppsSheet(contentViewModel: viewModel)
+            }
+            .overlay(alignment: .bottom) {
+                footerView
             }
         }
         .alert(isPresented: $viewModel.showingAlert) {
             Alert(title: Text("Error"), message: Text(viewModel.alertMessage), dismissButton: .default(Text("OK")))
         }
-        // Add footer as a status bar at the bottom
-        .overlay(alignment: .bottom) {
-            footerView
-        }
+        
     }
     
-    // Footer view styled as a status bar
     private var footerView: some View {
         HStack {
             Spacer()
-            
             Button(action: {
                 NSWorkspace.shared.open(URL(string: Constants.sponsorLink)!)
             }) {
@@ -112,11 +96,9 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .foregroundColor(.secondary)
-            
             Divider()
                 .frame(height: 12)
                 .padding(.horizontal, 8)
-            
             Button(action : {
                 NSWorkspace.shared.open(URL(string: Constants.githubLink)!)
             }) {
@@ -126,9 +108,6 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .foregroundColor(.secondary)
-            
-            
-            
         }
         .padding(.horizontal)
         .padding(.vertical, 4)
@@ -136,7 +115,6 @@ struct ContentView: View {
         .overlay(Divider(), alignment: .top)
     }
     
-    // Helper function to get app version
     private func getAppVersion() -> String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"

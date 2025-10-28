@@ -1,6 +1,5 @@
 import AppKit
 import Combine
-import SwiftUI
 
 /// Coordinates the process of launching managed applications based on delays and stages.
 @MainActor
@@ -11,7 +10,6 @@ class LaunchCoordinator: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var launchTimers: [UUID: Timer] = [:]
 
-    // Updated initializer to accept ErrorHandler and AppLauncherService
     init(appStore: ManagedAppStore, errorHandler: ErrorPresentable?, appLauncherService: AppLauncherService) {
         self.appStore = appStore
         self.errorHandler = errorHandler

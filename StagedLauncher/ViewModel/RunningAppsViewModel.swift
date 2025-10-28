@@ -1,5 +1,5 @@
 import AppKit
-import SwiftUI
+import Combine
 
 class RunningAppsViewModel: ObservableObject {
     @Published var runningApps: [RunningApp] = []

@@ -1,8 +1,7 @@
 import AppKit
-import Combine
 
 struct AppLauncherService {
-    private weak var errorHandler: ErrorPresentable?
+    private var errorHandler: ErrorPresentable?
     private let notifier: NotificationService
 
     init(
@@ -13,7 +12,6 @@ struct AppLauncherService {
         self.notifier = notifier
     }
 
-    // Implementation moved from LaunchManager
     @MainActor
     func launchApp(_ app: ManagedApp) {
         // Check if the app is already running

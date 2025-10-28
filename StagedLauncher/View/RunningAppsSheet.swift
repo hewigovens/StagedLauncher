@@ -27,8 +27,6 @@ struct RunningAppsSheet: View {
                         if !contentViewModel.isAppManaged(bundleIdentifier: app.bundleIdentifier) {
                             Button("Add") {
                                 contentViewModel.addApplication(from: app.url)
-                                // Optionally dismiss the sheet after adding
-                                // dismiss()
                             }
                             .buttonStyle(.bordered)
                         } else {

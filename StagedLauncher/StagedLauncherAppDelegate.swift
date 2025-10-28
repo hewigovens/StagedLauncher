@@ -1,9 +1,6 @@
 import AppKit
 import SwiftUI
 
-// Define KVO context (can be any unique pointer)
-private var effectiveAppearanceObservationContext = 0
-
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     var launchCoordinator: LaunchCoordinator?
     private var appearanceObservation: NSKeyValueObservation? // Store the KVO token

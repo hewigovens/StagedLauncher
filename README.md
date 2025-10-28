@@ -1,3 +1,5 @@
+![CI](https://github.com/hewigovens/StagedLauncher/actions/workflows/ci.yml/badge.svg)
+
 ```bash
 
    _____ _                       _   _                            _               

@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import SwiftUI
 
 /// Manages the list of managed applications and persists them.
 class ManagedAppStore: ObservableObject {
