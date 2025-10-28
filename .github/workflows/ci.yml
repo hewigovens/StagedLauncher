@@ -18,13 +18,21 @@ jobs:
           xcodebuild -version
           xcodebuild -showsdks
 
+      - name: Resolve package dependencies
+        run: |
+          xcodebuild \
+            -resolvePackageDependencies \
+            -project StagedLauncher.xcodeproj \
+            -scheme StagedLauncher
+
       - name: Build StagedLauncher (Debug)
         run: |
           set -euo pipefail
           xcodebuild \
             -project StagedLauncher.xcodeproj \
-            -target StagedLauncher \
+            -scheme StagedLauncher \
             -configuration Debug \
-            -destination 'generic/platform=macOS' \
+            -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO \
-            build
+            build \
+            | xcbeautify
