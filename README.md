@@ -25,6 +25,15 @@ A simple but modern macOS utility with staged startup support. Staged Launcher h
 
 - macOS 14.0 or later
 
+## Installation
+
+### Homebrew
+
+```bash
+brew tap hewigovens/tap
+brew install --cask staged-launcher
+```
+
 ## Usage
 
 1. Launch Stage Launcher
