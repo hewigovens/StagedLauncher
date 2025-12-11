@@ -1,4 +1,5 @@
 ![CI](https://github.com/hewigovens/StagedLauncher/actions/workflows/ci.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/hewigovens/stagedlauncher)
 
 ```bash
 
