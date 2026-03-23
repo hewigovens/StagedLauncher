@@ -58,4 +58,4 @@ brew install --cask staged-launcher
 
 ## License
 
-Apache-2.0 with additional App Store restriction. See [LICENSE](License).
+BSL 1.1 — free to use, modify, and redistribute; paid app store distribution requires permission. Converts to Apache-2.0 on 2030-03-23. See [LICENSE](License).
