@@ -58,4 +58,4 @@ brew install --cask staged-launcher
 
 ## License
 
-MIT License (with App Store Restriction)
+Apache-2.0 with additional App Store restriction. See [LICENSE](License).
