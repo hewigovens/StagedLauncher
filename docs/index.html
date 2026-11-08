@@ -1,615 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staged Launcher - Launch Your Apps Seamlessly</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #007AFF; /* Apple Blue */
-            --primary-dark: #0062cc; /* Darker Blue */
-            --secondary-color: #5AC8FA; /* Lighter Blue */
-            --accent-color: #34C759; /* Apple Green */
-            --feature-title-blue: #0A84FF; /* Slightly different blue for feature titles */
-            --background-light: #f8f9fa;
-            --background-white: #ffffff;
-            --background-gradient: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            --text-primary: #1d1d1f; /* Near Black */
-            --text-secondary: #6e6e73; /* Gray */
-            --border-color: #d2d2d7;
-            --button-dark: #333333; /* Dark Gray for Download Button */
-            --button-dark-hover: #555555;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-            --shadow-md: 0 4px 8px rgba(0,0,0,0.1);
-            --shadow-lg: 0 8px 16px rgba(0,0,0,0.1);
-            --radius-sm: 6px;
-            --radius-md: 12px;
-            --radius-lg: 20px;
-        }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Staged Launcher for Mac</title>
+<meta name="description" content="Staged Launcher opens the Mac apps you choose on a delay after login, from 30 seconds to 10 minutes, so the essentials come up first and the rest follow.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f5f7fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0d14" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://hewigovens.github.io/StagedLauncher/">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="256x256" href="assets/icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Staged Launcher">
+<meta property="og:title" content="Staged Launcher for Mac">
+<meta property="og:description" content="Pick a delay for each login app and let it open after your Mac has settled. Free for macOS 14.6 or later.">
+<meta property="og:url" content="https://hewigovens.github.io/StagedLauncher/">
+<meta property="og:image" content="https://hewigovens.github.io/StagedLauncher/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Staged Launcher window listing four apps, each with its own launch delay">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Staged Launcher for Mac">
+<meta name="twitter:description" content="Pick a delay for each login app and let it open after your Mac has settled.">
+<meta name="twitter:image" content="https://hewigovens.github.io/StagedLauncher/assets/og.png">
+<meta name="twitter:image:alt" content="The Staged Launcher window listing four apps, each with its own launch delay">
+<style>
+:root {
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --raised: #eceff4;
+  --line: rgba(17, 24, 39, 0.1);
+  --line-strong: rgba(17, 24, 39, 0.22);
+  --text: #111827;
+  --text-2: #4b5565;
+  --muted: #626b7d;
+  --accent: #0d47a1;
+  --accent-hover: #0a3a85;
+  --on-accent: #ffffff;
+  --ink: #0d47a1;
+  --shadow: 0 1px 2px rgba(17, 24, 39, 0.06), 0 12px 32px rgba(17, 24, 39, 0.1);
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0d14;
+    --card: #11141c;
+    --raised: #1a1e28;
+    --line: rgba(238, 240, 245, 0.09);
+    --line-strong: rgba(238, 240, 245, 0.24);
+    --text: #eef0f5;
+    --text-2: #a3a9b8;
+    --muted: #8a92a6;
+    --accent: #2f6bd0;
+    --accent-hover: #2860c0;
+    --on-accent: #ffffff;
+    --ink: #8db4f5;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.35);
+  }
+}
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-white);
-            background-image: var(--background-gradient);
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 17px/1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--ink); text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { margin: 0; font-weight: 600; line-height: 1.15; text-wrap: balance; }
+p { margin: 0; }
+code, kbd { font-family: var(--mono); font-size: 0.9em; }
 
-        /* Smooth Scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
+.wrap { width: 100%; max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.skip {
+  position: absolute; left: 16px; top: -48px;
+  padding: 8px 12px; background: var(--card); color: var(--text);
+  border-radius: 8px; z-index: 10;
+}
+.skip:focus { top: 12px; }
 
-        /* Header */
-        header {
-            padding: 1.25rem 2rem;
-            border-bottom: 1px solid rgba(210, 210, 215, 0.5);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            box-shadow: var(--shadow-sm);
-        }
+/* Header */
+.site-header { border-bottom: 1px solid var(--line); }
+.site-header .wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; min-height: 64px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--text); text-decoration: none; font-weight: 600;
+}
+.brand img { width: 28px; height: 28px; }
+.site-nav { display: flex; align-items: center; gap: 24px; }
+.site-nav a:not(.button) { color: var(--text-2); text-decoration: none; font-size: 15px; }
+.site-nav a:not(.button):hover { color: var(--text); }
 
-        header .logo {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s ease;
-        }
-        
-        header .logo:hover {
-            transform: scale(1.02);
-        }
+/* Buttons */
+.button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 20px; border-radius: 10px;
+  font: 500 16px/1 var(--sans); text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color 150ms var(--ease), border-color 150ms var(--ease), transform 100ms var(--ease);
+}
+.button:active { transform: scale(0.98); }
+.button-primary { background: var(--accent); color: var(--on-accent); }
+.button-primary:hover { background: var(--accent-hover); }
+.button-secondary { background: var(--card); color: var(--text); border-color: var(--line-strong); }
+.button-secondary:hover { background: var(--raised); }
+.button svg { width: 18px; height: 18px; flex: none; }
+.site-nav .button { min-height: 32px; padding: 0 14px; font-size: 14px; border-radius: 8px; }
 
-        header .logo img {
-            height: 32px; /* Slightly larger icon */
-            vertical-align: middle;
-            margin-right: 10px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
+/* Hero */
+.hero { padding: 96px 0 0; }
+.hero-text { max-width: 720px; }
+.hero h1 { font-size: clamp(36px, 5.2vw, 56px); letter-spacing: -0.022em; }
+.hero .lede { margin-top: 20px; font-size: 20px; color: var(--text-2); max-width: 600px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.meta { margin-top: 16px; font-size: 14px; color: var(--muted); }
+.hero-shot {
+  margin: 64px 0 0;
+  border-radius: 14px; overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
 
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 1.75rem;
-        }
-        
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            position: relative;
-            transition: color 0.2s ease;
-        }
-        
-        nav a:hover {
-            color: var(--primary-color);
-        }
-        
-        nav a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: var(--primary-color);
-            transition: width 0.2s ease;
-        }
-        
-        nav a:hover::after {
-            width: 100%;
-        }
+/* Sections */
+section { padding: 112px 0 0; }
+.section-head { max-width: 640px; margin-bottom: 40px; }
+.section-head h2 { font-size: clamp(28px, 3.4vw, 36px); letter-spacing: -0.015em; }
+.section-head p { margin-top: 12px; color: var(--text-2); }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(160deg, rgba(90, 200, 250, 0.05) 0%, rgba(0, 122, 255, 0.05) 100%);
-            padding: 7rem 2rem 6rem 2rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(90, 200, 250, 0.05) 0%, transparent 60%);
-            z-index: -1;
-        }
+/* Timeline: the login sequence drawn like a dimensioned drawing */
+.timeline {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px 32px 24px;
+}
+.cues { list-style: none; margin: 0; padding: 0; }
+.cue {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  align-items: center;
+  min-height: 52px;
+}
+.cue + .cue { border-top: 1px dashed var(--line); }
+.cue-time {
+  font: 500 14px/1 var(--mono); color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.cue-track { position: relative; height: 52px; }
+.dim {
+  position: absolute; left: 0; top: 50%;
+  width: calc(var(--at) * 10%);
+  height: 0; border-top: 1px solid var(--ink);
+}
+.dim::before, .dim::after {
+  content: ""; position: absolute; top: -7px;
+  width: 0; height: 13px; border-left: 1px solid var(--ink);
+}
+.dim::before { left: 0; }
+.dim::after { right: 0; }
+.cue-name {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  left: calc(var(--at) * 10% + 12px);
+  white-space: nowrap;
+  display: flex; align-items: baseline; gap: 10px;
+}
+.cue-name strong { font-weight: 500; }
+.cue-name span { font-size: 14px; color: var(--muted); }
+.cue-first .cue-name { left: 0; }
+.cue-first .cue-name::before {
+  content: ""; align-self: center;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--ink); margin-right: 2px;
+}
+.axis {
+  display: grid; grid-template-columns: 72px 1fr;
+  margin-top: 8px; padding-top: 12px; border-top: 1px solid var(--line-strong);
+}
+.axis ol {
+  list-style: none; margin: 0; padding: 0;
+  position: relative; height: 20px;
+  font: 400 12px/20px var(--mono); color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.axis li { position: absolute; white-space: nowrap; left: calc(var(--at) * 10%); transform: translateX(-50%); }
+.axis li:first-child { transform: none; }
+.axis li:last-child { transform: translateX(-100%); }
+.timeline-note { margin-top: 20px; font-size: 15px; color: var(--text-2); max-width: 720px; }
 
-        .hero h1 {
-            margin-bottom: 0.75rem;
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            line-height: 1.1;
-        }
+/* Features as a spec sheet */
+.spec { margin: 0; border-top: 1px solid var(--line-strong); }
+.spec div {
+  display: grid; grid-template-columns: 240px minmax(0, 1fr);
+  gap: 8px 32px; padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.spec dt { font-weight: 500; }
+.spec dd { margin: 0; color: var(--text-2); }
 
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 2.5rem;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-            color: var(--text-secondary);
-            animation: fadeIn 1s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* Screenshots */
+.shots { display: grid; grid-template-columns: 1.7fr 1fr; gap: 24px; align-items: start; }
+.shots figure { margin: 0; }
+.shots img { border-radius: 12px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.shots figcaption { margin-top: 12px; font-size: 15px; color: var(--text-2); }
 
-        /* Main Container */
-        .container {
-            max-width: 960px;
-            margin: 3rem auto;
-            padding: 0 2rem; /* Adjusted padding */
-            /* Removed background/shadow for cleaner look */
-        }
+/* Install */
+.install { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.panel {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px;
+  display: flex; flex-direction: column; gap: 16px; align-items: flex-start;
+}
+.panel h3 { font-size: 20px; }
+.panel p { color: var(--text-2); font-size: 16px; }
+.panel pre {
+  margin: 0; width: 100%; overflow-x: auto;
+  background: var(--raised); border-radius: 8px; padding: 16px;
+  font: 400 14px/1.6 var(--mono); color: var(--text);
+}
+.panel pre code { font-size: inherit; }
+.prompt { color: var(--muted); user-select: none; }
 
-        /* Sections */
-        .section {
-            margin-bottom: 4rem;
-        }
+/* Footer */
+.site-footer { margin-top: 112px; border-top: 1px solid var(--line); padding: 32px 0 48px; }
+.site-footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 32px; }
+.site-footer p { font-size: 14px; color: var(--text-2); max-width: 560px; }
+.site-footer ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; }
 
-        .section h2 {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 2.5rem;
-            /* Removed border */
-        }
-
-        #about p {
-             text-align: center;
-             max-width: 700px;
-             margin-left: auto;
-             margin-right: auto;
-             color: var(--text-secondary);
-             font-size: 1.1rem;
-        }
-
-        /* Features */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly larger min size */
-            gap: 2rem;
-            text-align: left;
-        }
-
-        .feature-item {
-            background-color: var(--background-white);
-            padding: 2rem;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .feature-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(to bottom, var(--accent-color), #5856D6);
-            border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-        }
-        
-        .feature-item:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .feature-item h3 {
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-            color: #333333;
-            font-size: 1.25rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-        }
-        
-        .feature-item h3::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            margin-right: 10px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-        }
-        
-        .feature-item p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.7;
-        }
-
-        /* Screenshots */
-        .screenshots {
-            text-align: center;
-            margin-top: 3rem;
-        }
-        
-        .screenshots p:first-of-type {
-             color: var(--text-secondary);
-             margin-bottom: 2rem;
-             font-size: 1.1rem;
-        }
-        
-        .screenshots-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-        
-        .screenshot-container {
-            position: relative;
-            display: inline-block;
-            transition: transform 0.3s ease;
-            margin-bottom: 1rem;
-        }
-        
-        .screenshot-container:hover {
-            transform: scale(1.02);
-        }
-        
-        .screenshot-container.full-width {
-            grid-column: 1 / -1;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .screenshot-container.smaller {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .screenshots img {
-            width: 100%;
-            height: auto;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md); /* Consistent rounding */
-            box-shadow: var(--shadow-lg);
-            transition: all 0.3s ease;
-            object-fit: contain;
-        }
-        
-        .screenshot-container.smaller img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-        
-        .screenshots img:hover {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        
-        @media (max-width: 768px) {
-            .screenshots-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .screenshot-container.full-width {
-                max-width: 100%;
-            }
-        }
-
-        /* Download Section */
-        .download-section {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, rgba(0, 122, 255, 0.05) 0%, rgba(90, 200, 250, 0.1) 100%);
-            border-radius: var(--radius-lg);
-            margin-top: 4rem;
-            border: 1px solid rgba(210, 210, 215, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .download-section::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(90, 200, 250, 0.1) 0%, transparent 70%);
-            top: -150px;
-            right: -150px;
-            z-index: 0;
-        }
-        .download-section h2 {
-             margin-bottom: 1rem;
-        }
-        .download-section p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Buttons */
-        .cta-button {
-            display: inline-flex; /* Align icon and text */
-            align-items: center;
-            justify-content: center;
-            padding: 16px 32px;
-            font-size: 1.1rem;
-            font-weight: 600; /* Semibold weight */
-            color: var(--background-white);
-            background-color: var(--primary-color); /* Use Apple Blue */
-            border: none;
-            border-radius: var(--radius-sm);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-        
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.7s ease;
-            z-index: -1;
-        }
-
-        .cta-button:hover {
-            background-color: var(--primary-dark); /* Darker blue on hover */
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-        
-        .cta-button:hover::before {
-            left: 100%;
-        }
-        
-        .cta-button:active {
-            transform: translateY(0) scale(0.98);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        /* Download button in nav should be smaller */
-        nav .cta-button {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            background-color: var(--primary-color);
-        }
-
-        /* Style for icon inside button */
-        .cta-button svg {
-            width: 1em; /* Relative to font size */
-            height: 1em;
-            margin-right: 0.5em;
-            fill: currentColor; /* Inherit text color (white) */
-        }
-
-        /* Social Links */
-        .social-links {
-            margin-top: 2rem;
-            margin-bottom: 1.5rem; /* Add space before copyright */
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-
-        .social-links a {
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: var(--background-light);
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: var(--background-white);
-            background-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--primary-color);
-        }
-
-        .social-links svg {
-            width: 24px;
-            height: 24px;
-            vertical-align: middle;
-            fill: currentColor;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            margin-top: 5rem;
-            padding: 3rem 2rem;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border-color);
-            background-color: var(--background-light);
-            position: relative;
-        }
-        
-        footer a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s ease;
-        }
-        
-        footer a:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            header {
-                flex-direction: column;
-                padding: 1rem;
-                gap: 1rem;
-            }
-            
-            nav {
-                width: 100%;
-                justify-content: center;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-        }
-    </style>
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  .wrap { padding: 0 16px; }
+  .site-nav { gap: 16px; }
+  .site-nav .nav-link { display: none; }
+  .hero { padding-top: 48px; }
+  .hero h1 { font-size: 34px; }
+  .hero .lede { font-size: 18px; margin-top: 16px; }
+  .actions { margin-top: 24px; }
+  .actions .button { flex: 1 1 100%; }
+  .hero-shot { margin-top: 40px; border-radius: 10px; }
+  section { padding-top: 80px; }
+  .section-head { margin-bottom: 28px; }
+  .timeline { padding: 20px 16px 16px; }
+  .cue, .axis { grid-template-columns: 52px 1fr; }
+  .cue-name { flex-direction: column; gap: 0; line-height: 1.3; }
+  .cue-first .cue-name::before { display: none; }
+  .spec div { grid-template-columns: 1fr; padding: 16px 0; }
+  .shots, .install { grid-template-columns: minmax(0, 1fr); }
+  .panel { padding: 20px; }
+  .site-footer { margin-top: 80px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+}
+</style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-    <header>
-        <div class="logo">
-            <img src="assets/icon.png" alt="Icon">
-            Staged Launcher
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <img src="assets/icon.png" width="28" height="28" alt="">
+      Staged Launcher
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <a class="nav-link" href="#how">How it works</a>
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="https://github.com/hewigovens/StagedLauncher">GitHub</a>
+      <a class="button button-primary" href="#install">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-text">
+        <h1>Open your login apps on a schedule</h1>
+        <p class="lede">Staged Launcher opens the apps you choose on a delay after you log in, so the essentials come up first and the rest follow once your Mac has settled.</p>
+        <div class="actions">
+          <a class="button button-primary" href="https://github.com/hewigovens/StagedLauncher/releases/latest">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10M5.5 8.5 10 13l4.5-4.5M4 16.5h12"/></svg>
+            Download for Mac
+          </a>
+          <a class="button button-secondary" href="https://github.com/hewigovens/StagedLauncher">View source on GitHub</a>
         </div>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#features">Features</a>
-            <a href="#screenshots">Screenshots</a>
-            <a href="#download" class="cta-button">Download</a>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <h1>Launch Your Apps Seamlessly</h1>
-        <p>The easiest way to manage and delay the launch of applications across different stages on your Mac. Speed up your boot process.</p>
-        <a href="#download" class="cta-button">
-            <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 15.4-67.1 34.4-16.5 20.8-27.6 47.7-27.6 73.8 26.3 1.3 50.4-10.5 67.7-35.7z"/></svg>
-            Download for macOS
-        </a>
-    </section>
-
-    <div class="container">
-
-        <section id="about" class="section">
-            <h2>About</h2>
-            <p>Macs rarely reboot, but when they do, every login item slows you down.
-                Staged Launcher fires up the essentials first, then staggers non‑critical apps like wallpaper switchers, window managers, and VPNs.
-                Everything you need still runs—just a few moments later and out of sight.</p>
-            <p>You get: faster boots and a smoother desktop, all from one lightweight macOS tool.</p>
-        </section>
-
-        <section id="features" class="section">
-            <h2>Key Features</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <h3>Intuitive Configuration</h3>
-                    <p>Add your apps and configure delay settings through a simple, intuitive UI.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>Seamless macOS Integration</h3>
-                    <p>Built natively for macOS, lightweight and minimal resource usage, fast experience integrated into your workflow.</p>
-                </div>
-                <div class="feature-item">
-                    <h3>Open Source & Transparent</h3>
-                    <p>Available on GitHub, transparent code and community contributions.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="screenshots" class="section">
-            <h2>See Staged Launcher in Action</h2>
-            <div class="screenshots">
-                <p>See how Staged Launcher helps you organize your startup applications with a clean, native macOS interface</p>
-                
-                <div class="screenshots-grid">
-                    <div class="screenshot-container full-width">
-                        <img src="assets/main_window.png" alt="Staged Launcher Main Interface">
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Intuitive Main Application Window</p>
-                    </div>
-                    
-                    <div class="screenshot-container">
-                        <img src="assets/running_apps_window.png" alt="Staged Launcher Settings">
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Easy Configuration Settings</p>
-                    </div>
-                    
-                    <div class="screenshot-container smaller">
-                        <img src="assets/notifications.png" alt="Staged Launcher Notifications">
-                        <p style="font-size: 0.9em; color: var(--text-secondary); margin-top: 0.75rem;">Unobtrusive Notifications</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="download" class="download-section">
-            <h2>Get Staged Launcher</h2>
-            <p>Download the latest version for macOS and start simplifying your app launching process today!</p>
-            <a href="https://github.com/hewigovens/StagedLauncher/releases/latest" class="cta-button">
-                 <svg viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 15.4-67.1 34.4-16.5 20.8-27.6 47.7-27.6 73.8 26.3 1.3 50.4-10.5 67.7-35.7z"/></svg>
-                 Download Now
-            </a>
-        </section>
-
+        <p class="meta">Free · macOS 14.6 or later · Also on Homebrew</p>
+      </div>
+      <img class="hero-shot" src="assets/main_window.png" width="1800" height="900" fetchpriority="high"
+        alt="The Staged Launcher window. A sidebar lists app categories; the main list shows Irvue at 5 minutes, Rectangle at 1 minute, Tailscale at 3 minutes and Miso at 5 minutes, each with an on/off checkbox.">
     </div>
+  </div>
 
-    <footer>
-        <div class="social-links">
-            <a href="https://x.com/hewigovens" target="_blank" title="X / Twitter">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href="https://github.com/hewigovens/StagedLauncher" target="_blank" title="GitHub">
-                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-            </a>
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="how-title">What happens after you log in</h2>
+        <p>Staged Launcher starts at login, then opens each app when its own delay runs out.</p>
+      </div>
+
+      <div class="timeline">
+        <ol class="cues">
+          <li class="cue cue-first" style="--at: 0">
+            <span class="cue-time">0:00</span>
+            <span class="cue-track"><span class="cue-name"><strong>Log in</strong><span>Staged Launcher starts</span></span></span>
+          </li>
+          <li class="cue" style="--at: 1">
+            <span class="cue-time">+1:00</span>
+            <span class="cue-track"><span class="dim" aria-hidden="true"></span><span class="cue-name"><strong>Rectangle</strong><span>1 min</span></span></span>
+          </li>
+          <li class="cue" style="--at: 3">
+            <span class="cue-time">+3:00</span>
+            <span class="cue-track"><span class="dim" aria-hidden="true"></span><span class="cue-name"><strong>Tailscale</strong><span>3 min</span></span></span>
+          </li>
+          <li class="cue" style="--at: 5">
+            <span class="cue-time">+5:00</span>
+            <span class="cue-track"><span class="dim" aria-hidden="true"></span><span class="cue-name"><strong>Irvue, Miso</strong><span>5 min</span></span></span>
+          </li>
+        </ol>
+        <div class="axis" aria-hidden="true">
+          <span></span>
+          <ol>
+            <li style="--at: 0">0</li>
+            <li style="--at: 1">1</li>
+            <li style="--at: 3">3</li>
+            <li style="--at: 5">5</li>
+            <li style="--at: 10">10 min</li>
+          </ol>
         </div>
-        &copy; 2025 <a href="https://hewig.dev" target="_blank" title="X / Twitter">hewig.dev</a>. All rights reserved.
-    </footer>
+      </div>
+      <p class="timeline-note">Turn on Launch at Login in Staged Launcher’s settings so it can start the sequence. Take the apps out of macOS Login Items, or they will still open right away; the list flags any that are still there. Apps that are already running are skipped.</p>
+    </div>
+  </section>
 
+  <section id="features" aria-labelledby="features-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="features-title">Features</h2>
+      </div>
+      <dl class="spec">
+        <div><dt>A delay for each app</dt><dd>None, 30 seconds, or 1, 2, 3, 5 or 10 minutes. New apps start at 3 minutes.</dd></div>
+        <div><dt>Add apps two ways</dt><dd>Pick from the apps that are running right now, or choose any app from a file dialog.</dd></div>
+        <div><dt>Switch apps on and off</dt><dd>Uncheck an app to skip it at the next login without losing its delay.</dd></div>
+        <div><dt>Sorted by category</dt><dd>The sidebar groups your apps by their App Store category, such as Productivity or Utilities.</dd></div>
+        <div><dt>Launch notifications</dt><dd>Optionally get a notification each time a delayed app opens.</dd></div>
+        <div><dt>Menu bar mode</dt><dd>Hide the Dock icon and keep Staged Launcher in the menu bar instead.</dd></div>
+        <div><dt>Quit when done</dt><dd>Have Staged Launcher quit itself once the last app has launched.</dd></div>
+        <div><dt>Native and sandboxed</dt><dd>Built in SwiftUI and runs in the App Sandbox.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="screenshots" aria-labelledby="shots-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="shots-title">Screenshots</h2>
+      </div>
+      <div class="shots">
+        <figure>
+          <img src="assets/running_apps_window.jpg" width="1280" height="800" loading="lazy" decoding="async"
+            alt="The Add from Running Applications sheet over the main window, listing Hidden Bar, iTerm2, Microsoft Edge, Raycast and Squirrel with Add buttons, and Rectangle and Tailscale marked as added.">
+          <figcaption>Add apps from the ones already running</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/notifications.png" width="754" height="568" loading="lazy" decoding="async"
+            alt="Three macOS notifications titled Staged App Launched, reporting that Irvue, Rectangle and Tailscale launched after their delay.">
+          <figcaption>Optional notifications as each app opens</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" aria-labelledby="install-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="install-title">Install</h2>
+        <p>Staged Launcher requires macOS 14.6 or later.</p>
+      </div>
+      <div class="install">
+        <div class="panel">
+          <h3>Download</h3>
+          <p>Download the zip from the latest GitHub release, unzip it and move Staged Launcher to Applications.</p>
+          <a class="button button-primary" href="https://github.com/hewigovens/StagedLauncher/releases/latest">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3v10M5.5 8.5 10 13l4.5-4.5M4 16.5h12"/></svg>
+            Latest release
+          </a>
+        </div>
+        <div class="panel">
+          <h3>Homebrew</h3>
+          <p>Install the cask from the hewigovens tap.</p>
+          <pre><code><span class="prompt" aria-hidden="true">$ </span>brew tap hewigovens/tap
+<span class="prompt" aria-hidden="true">$ </span>brew install --cask staged-launcher</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Staged Launcher is made by <a href="https://hewig.dev">hewig.dev</a>. Source available under the Business Source License 1.1, converting to Apache 2.0 on March 23, 2030.</p>
+    <ul aria-label="Links">
+      <li><a href="https://github.com/hewigovens/StagedLauncher">GitHub</a></li>
+      <li><a href="https://github.com/hewigovens/StagedLauncher/releases">Releases</a></li>
+      <li><a href="https://github.com/hewigovens/StagedLauncher/blob/main/License">License</a></li>
+      <li><a href="https://github.com/sponsors/hewigovens">Sponsor</a></li>
+    </ul>
+  </div>
+</footer>
 </body>
 </html>

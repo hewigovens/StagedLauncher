@@ -3,7 +3,7 @@
 ## Requirements
 
 - Xcode 16.0 or later
-- macOS 14.0+
+- macOS 14.6+
 
 ## Development setup
 
