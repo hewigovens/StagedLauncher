@@ -4,37 +4,50 @@ import Foundation
 struct ManagedApp: Identifiable, Codable, Equatable {
     var id: UUID
     var name: String
-    var bundleIdentifier: String // Using Bundle ID is generally preferred
-    var bookmarkData: Data? // Store bookmark data instead of raw URL
-    var delaySeconds: Int = 180 // Default to 3 minutes
+    var bundleIdentifier: String
+    /// Security-scoped bookmark to the app bundle, required to launch it from the sandbox.
+    var bookmarkData: Data?
+    var delaySeconds: Int = 180
     var isEnabled: Bool = true
-    var category: String // Add category property
+    /// Raw `LSApplicationCategoryType` value, or `Constants.categoryOther`.
+    var category: String
 
-    // --- Delay Options ---
-    static let delayOptions: [Int] = [0, 30, 60, 120, 180, 300, 600] // In seconds
+    // MARK: - Delay Options
+
+    static let delayOptions: [Int] = [0, 30, 60, 120, 180, 300, 600]
 
     static func formatDelay(_ seconds: Int) -> String {
-        switch seconds {
-        case 0: return "None"
-        case 60: return "1 Min"
-        case let s where s < 60: return "\(s) Sec"
-        default: return "\(seconds / 60) Min"
-        }
+        guard seconds > 0 else { return String(localized: "No Delay") }
+        return Duration.seconds(seconds).formatted(.units(allowed: [.minutes, .seconds], width: .abbreviated))
     }
 
-    // --- End Delay Options ---
+    // MARK: - Bookmark Access
 
-    // Computed property to resolve the URL from bookmark data
-    var resolvedURL: URL? {
-        guard let data = bookmarkData else { return nil }
+    /// Resolves the bookmark and runs `body` while the security-scoped URL is accessible.
+    /// Returns `nil` when there is no bookmark or it cannot be resolved or accessed.
+    func withSecurityScopedURL<T>(_ body: (URL) throws -> T) rethrows -> T? {
+        guard let bookmarkData else { return nil }
         var isStale = false
-        let url = try? URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-        // Handle stale bookmark if necessary, e.g., try to refresh it
-        // For simplicity now, we just return the resolved URL or nil
-        return url
+        guard let url = try? URL(
+            resolvingBookmarkData: bookmarkData,
+            options: .withSecurityScope,
+            relativeTo: nil,
+            bookmarkDataIsStale: &isStale
+        ) else {
+            Logger.error("Could not resolve bookmark for \(name).")
+            return nil
+        }
+        if isStale {
+            Logger.warning("Bookmark for \(name) is stale.")
+        }
+        guard url.startAccessingSecurityScopedResource() else {
+            Logger.error("Could not access security-scoped URL for \(name).")
+            return nil
+        }
+        defer { url.stopAccessingSecurityScopedResource() }
+        return try body(url)
     }
 
-    // Static func for easy creation - accepts bookmark data
     static func new(name: String, bundleIdentifier: String, bookmark: Data?, category: String) -> ManagedApp {
         ManagedApp(id: UUID(), name: name, bundleIdentifier: bundleIdentifier, bookmarkData: bookmark, category: category)
     }

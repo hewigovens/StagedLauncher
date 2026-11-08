@@ -1,42 +1,45 @@
 import ServiceManagement
-import AppKit
 
-class LoginItemService: ObservableObject {
-    
+/// Registers Staged Launcher itself as a login item.
+@MainActor
+final class LoginItemService: ObservableObject {
     static let shared = LoginItemService()
 
-    // MARK: - Public Properties
-    @Published var launchAtLoginEnabled: Bool = false
+    @Published private(set) var status: SMAppService.Status
+    @Published private(set) var lastError: String?
 
     private let service = SMAppService.mainApp
 
-    init() {
-        // Set initial state based on the service
-        self.launchAtLoginEnabled = service.status == .enabled
+    private init() {
+        status = service.status
     }
 
-    func toggleLaunchAtLogin() {
-        // Perform the operation asynchronously to avoid blocking the main thread
-        Task {
-            do {
-                if service.status == .enabled {
-                    try service.unregister()
-                    Logger.info("Login item disabled successfully.")
-                } else {
-                    try service.register()
-                    Logger.info("Login item enabled successfully.")
-                }
-                // Update state on the main thread after completion
-                DispatchQueue.main.async {
-                    self.launchAtLoginEnabled = self.service.status == .enabled
-                }
-            } catch {
-                Logger.error("Failed to update login item: \(error.localizedDescription)")
-                // Revert the state on the main thread after error
-                DispatchQueue.main.async {
-                    self.launchAtLoginEnabled = self.service.status == .enabled
-                }
+    /// True when registered, including while waiting for approval in System Settings.
+    var isEnabled: Bool {
+        status == .enabled || status == .requiresApproval
+    }
+
+    func refresh() {
+        status = service.status
+    }
+
+    func setEnabled(_ enabled: Bool) {
+        lastError = nil
+        do {
+            if enabled {
+                try service.register()
+            } else {
+                try service.unregister()
             }
+            Logger.info("Login item \(enabled ? "registered" : "unregistered").")
+        } catch {
+            Logger.error("Failed to update login item: \(error.localizedDescription)")
+            lastError = error.localizedDescription
         }
+        refresh()
+    }
+
+    func openSystemSettings() {
+        SMAppService.openSystemSettingsLoginItems()
     }
 }

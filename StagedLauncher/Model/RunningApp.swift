@@ -1,7 +1,7 @@
 import AppKit
 
 struct RunningApp: Identifiable {
-    let id = UUID()
+    var id: String { bundleIdentifier }
     let name: String
     let bundleIdentifier: String
     let icon: NSImage

@@ -1,208 +1,180 @@
 import AppKit
-import Foundation
+import Combine
+import LSAppCategory
 import SwiftUI
 
 @MainActor
-class ContentViewModel: ObservableObject, ErrorPresentable {
-    @Published var appStore: ManagedAppStore
+final class ContentViewModel: ObservableObject, ErrorPresentable {
+    let appStore: ManagedAppStore
     @Published var showingAlert = false
     @Published var alertMessage = ""
+    @Published var selectedCategory: String? = Constants.categoryAllApps
+    @Published private(set) var loginItemPaths: Set<String> = []
 
-    // --- Filtering State ---
-    @Published var selectedCategory: String? = nil // Initially show all
+    private var iconCache: [UUID: NSImage] = [:]
+    private var cancellables = Set<AnyCancellable>()
+
+    init(appStore: ManagedAppStore) {
+        self.appStore = appStore
+        // Derived state (categories, filtered apps) depends on the store, so forward its changes.
+        appStore.objectWillChange
+            .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+        appStore.$managedApps
+            .sink { [weak self] apps in self?.storeDidChange(apps) }
+            .store(in: &cancellables)
+        refreshLoginItems()
+    }
+
+    // MARK: - Categories
 
     var categories: [String] {
-        // Get unique categories, sort them, and add "All Apps" at the beginning
-        let uniqueCategories = Set(appStore.managedApps.map { $0.category })
-        return [Constants.categoryAllApps] + uniqueCategories.sorted()
+        let uniqueCategories = Set(appStore.managedApps.map(\.category))
+        return [Constants.categoryAllApps] + uniqueCategories.sorted {
+            formatCategoryName($0).localizedStandardCompare(formatCategoryName($1)) == .orderedAscending
+        }
     }
 
     var filteredApps: [ManagedApp] {
         guard let category = selectedCategory, category != Constants.categoryAllApps else {
-            return appStore.managedApps // Return all if nil or "All Apps"
+            return appStore.managedApps
         }
         return appStore.managedApps.filter { $0.category == category }
     }
 
-    // --- End Filtering State ---
+    func appCount(in category: String) -> Int {
+        category == Constants.categoryAllApps
+            ? appStore.managedApps.count
+            : appStore.managedApps.filter { $0.category == category }.count
+    }
 
-    // --- Category Formatting ---
     func formatCategoryName(_ rawCategory: String) -> String {
         if rawCategory == Constants.categoryAllApps || rawCategory == Constants.categoryOther {
             return rawCategory
         }
-
-        let components = rawCategory.split(separator: ".")
-        guard let lastComponent = components.last else {
-            return rawCategory // Return raw if splitting fails
+        guard let lastComponent = rawCategory.split(separator: ".").last else {
+            return rawCategory
         }
-
         return lastComponent
             .replacingOccurrences(of: "-", with: " ")
-            .capitalized // Capitalize the first letter of each word
+            .capitalized
     }
 
-    // --- End Category Formatting ---
-
-    init(appStore: ManagedAppStore) {
-        self.appStore = appStore
+    func symbolName(forCategory category: String) -> String {
+        switch category {
+        case Constants.categoryAllApps: "square.stack"
+        case Constants.categoryOther: "questionmark.folder"
+        default: AppCategory(string: category).sfSymbol
+        }
     }
 
     // MARK: - App Management
 
-    func removeApps(at offsets: IndexSet) {
-        appStore.removeApp(at: offsets)
+    func binding(for app: ManagedApp) -> Binding<ManagedApp> {
+        Binding(
+            get: { [appStore] in appStore.managedApps.first { $0.id == app.id } ?? app },
+            set: { [appStore] in appStore.updateApp($0) }
+        )
     }
 
     func removeApp(id: UUID) {
         appStore.removeApp(id: id)
     }
 
-    func removeFilteredApps(at offsets: IndexSet) {
-        // 1. Get the apps to remove from the filtered list based on the offsets
-        let appsToRemove = offsets.map { filteredApps[$0] }
-
-        // 2. Get their IDs
-        let idsToRemove = appsToRemove.map { $0.id }
-
-        // 3. Remove apps from the original store using their IDs
-        idsToRemove.forEach { appStore.removeApp(id: $0) }
+    func revealInFinder(_ app: ManagedApp) {
+        let revealed = app.withSecurityScopedURL { url in
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+            return true
+        }
+        if revealed == nil {
+            showError(message: String(localized: "Could not locate \(app.name)."))
+        }
     }
 
     func presentOpenPanel() {
         let openPanel = NSOpenPanel()
-        // Set the default directory to /Applications
         if let applicationsURL = FileManager.default.urls(for: .applicationDirectory, in: .localDomainMask).first {
             openPanel.directoryURL = applicationsURL
         }
-
-        openPanel.title = "Choose an Application"
-        openPanel.showsHiddenFiles = false
+        openPanel.title = String(localized: "Choose Applications")
+        openPanel.prompt = String(localized: "Add")
         openPanel.canChooseDirectories = false
         openPanel.canCreateDirectories = false
-        openPanel.allowsMultipleSelection = false
-        openPanel.allowedContentTypes = [.applicationBundle] // Only allow .app files
+        openPanel.allowsMultipleSelection = true
+        openPanel.allowedContentTypes = [.applicationBundle]
 
-        if openPanel.runModal() == .OK {
-            guard let url = openPanel.url else {
-                showError(message: "Could not get the selected application URL.")
-                return
-            }
-            addApplication(from: url)
-        }
+        guard openPanel.runModal() == .OK else { return }
+        openPanel.urls.forEach(addApplication(from:))
     }
 
-    public func addApplication(from url: URL) {
+    func addApplication(from url: URL) {
         guard let bundle = Bundle(url: url) else {
-            showError(message: "Could not load bundle information for the selected application.")
+            showError(message: String(localized: "Could not read the application at \(url.lastPathComponent)."))
             return
         }
-
-        let appName = bundle.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String ?? url.deletingPathExtension().lastPathComponent
         guard let bundleId = bundle.bundleIdentifier else {
-            showError(message: "Could not determine the bundle identifier for the selected application.")
+            showError(message: String(localized: "\(url.lastPathComponent) has no bundle identifier."))
+            return
+        }
+        guard !isAppManaged(bundleIdentifier: bundleId) else {
+            Logger.info("Skipping \(bundleId); already managed.")
             return
         }
 
-        // --- Read Category ---
-        let category = bundle.object(forInfoDictionaryKey: "LSApplicationCategoryType") as? String ?? Constants.categoryOther
+        let appName = FileManager.default.displayName(atPath: url.path)
+            .replacingOccurrences(of: ".app", with: "", options: [.anchored, .backwards])
+        let category = bundle.object(forInfoDictionaryKey: "LSApplicationCategoryType") as? String ?? ""
         let finalCategory = category.isEmpty ? Constants.categoryOther : category
-        // --- End Read Category ---
 
-        // Create bookmark data
-        var bookmarkData: Data?
+        let bookmarkData: Data
         do {
             bookmarkData = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
         } catch {
-            showError(message: "Failed to create bookmark for application: \(error.localizedDescription)")
+            showError(message: String(localized: "Could not save access to \(appName): \(error.localizedDescription)"))
             return
         }
 
-        // Wrap the state update in DispatchQueue.main.async
-        DispatchQueue.main.async {
-            // Pass category to addApp
-            self.appStore.addApp(name: appName, bundleIdentifier: bundleId, bookmark: bookmarkData, category: finalCategory)
-        }
+        appStore.addApp(name: appName, bundleIdentifier: bundleId, bookmark: bookmarkData, category: finalCategory)
     }
 
-    // Helper to check if an app is already managed
     func isAppManaged(bundleIdentifier: String) -> Bool {
-        return appStore.managedApps.contains { $0.bundleIdentifier == bundleIdentifier }
+        appStore.managedApps.contains { $0.bundleIdentifier == bundleIdentifier }
     }
 
-    // MARK: - Helpers
+    // MARK: - Login Items
 
-    /// Checks if the given managed app is present in the system's login items.
-    /// - Parameter app: The `ManagedApp` to check.
-    /// - Returns: `true` if the app is found in login items, `false` otherwise.
+    func refreshLoginItems() {
+        loginItemPaths = Set(LoginItemHelper.snapshotLoginItemURLs().map(\.path))
+    }
+
     func isLoginItem(app: ManagedApp) -> Bool {
-        guard let data = app.bookmarkData else {
-            Logger.warning("No bookmark data for app \(app.name) to check login item status.")
-            return false // Cannot determine without bookmark
-        }
-
-        var isStale = false
-        do {
-            let appURL = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
-
-            if isStale {
-                Logger.warning("Stale bookmark data for \(appURL.lastPathComponent) when checking login items.")
-                // Optionally attempt to refresh the bookmark here if needed
-            }
-
-            guard appURL.startAccessingSecurityScopedResource() else {
-                Logger.error("Could not access security scoped resource for \(appURL.lastPathComponent) when checking login items.")
-                return false // Cannot determine access
-            }
-            defer { appURL.stopAccessingSecurityScopedResource() } // Ensure we stop accessing
-
-            let loginItemURLs = LoginItemHelper.snapshotLoginItemURLs()
-
-            // Compare the resolved URL's path to the login item URL paths
-            let appPath = appURL.path
-            return loginItemURLs.contains { $0.path == appPath }
-
-        } catch {
-            Logger.error("Error resolving bookmark data for \(app.name) when checking login items: \(error.localizedDescription)")
-            return false // Error resolving, assume not a login item
-        }
+        guard !loginItemPaths.isEmpty else { return false }
+        return app.withSecurityScopedURL { loginItemPaths.contains($0.path) } ?? false
     }
 
-    // MARK: - Icon Retrieval
+    // MARK: - Icons
 
-    func getAppIcon(for bookmarkData: Data?) -> NSImage {
-        guard let data = bookmarkData else {
-            // Return generic icon if no bookmark data
-            return NSImage(systemSymbolName: "questionmark.app", accessibilityDescription: "Unknown App") ?? NSImage()
+    func icon(for app: ManagedApp) -> NSImage {
+        if let cached = iconCache[app.id] {
+            return cached
         }
+        let icon = app.withSecurityScopedURL { NSWorkspace.shared.icon(forFile: $0.path) }
+            ?? NSImage(systemSymbolName: "questionmark.app.dashed", accessibilityDescription: nil)
+            ?? NSImage()
+        iconCache[app.id] = icon
+        return icon
+    }
 
-        var isStale = false
-        do {
-            // Resolve the URL from bookmark data
-            let url = try URL(resolvingBookmarkData: data, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &isStale)
+    // MARK: - Store Changes
 
-            // Handle stale bookmark data if necessary
-            if isStale {
-                // Optionally try to refresh the bookmark here
-                Logger.warning("Bookmark data is stale for \(url.lastPathComponent)")
-            }
+    private func storeDidChange(_ apps: [ManagedApp]) {
+        let ids = Set(apps.map(\.id))
+        iconCache = iconCache.filter { ids.contains($0.key) }
 
-            // Important: Access the security-scoped resource
-            guard url.startAccessingSecurityScopedResource() else {
-                Logger.error("Could not access security scoped resource for \(url.lastPathComponent)")
-                return NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Access Denied") ?? NSImage()
-            }
-
-            // Use NSWorkspace to get the icon for the file URL
-            let icon = NSWorkspace.shared.icon(forFile: url.path)
-
-            // Stop accessing the resource
-            url.stopAccessingSecurityScopedResource()
-
-            return icon
-        } catch {
-            Logger.error("Error resolving bookmark data: \(error.localizedDescription)")
-            return NSImage(systemSymbolName: "exclamationmark.arrow.triangle.2.circlepath", accessibilityDescription: "Resolution Failed") ?? NSImage()
+        // Fall back to "All Apps" when the selected category's last app is removed.
+        if let selectedCategory, selectedCategory != Constants.categoryAllApps,
+           !apps.contains(where: { $0.category == selectedCategory }) {
+            self.selectedCategory = Constants.categoryAllApps
         }
     }
 
@@ -211,6 +183,6 @@ class ContentViewModel: ObservableObject, ErrorPresentable {
     func showError(message: String) {
         alertMessage = message
         showingAlert = true
-        Logger.error(message) // Use Logger instead of print
+        Logger.error(message)
     }
 }

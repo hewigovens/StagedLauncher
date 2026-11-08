@@ -1,72 +1,74 @@
 import SwiftUI
 
 struct RunningAppsSheet: View {
-    // ViewModel to fetch running apps
     @StateObject private var runningAppsViewModel = RunningAppsViewModel()
-    // ViewModel of the ContentView to add the selected app
     @ObservedObject var contentViewModel: ContentViewModel
-    // Environment variable to dismiss the sheet
-    @Environment(\.dismiss) var dismiss
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack {
-            Text("Add from Running Applications")
-                .font(.title2)
-                .padding()
+        VStack(spacing: 0) {
+            HStack {
+                Text("Add from Running Apps")
+                    .font(.headline)
+                Spacer()
+                Button {
+                    runningAppsViewModel.fetchRunningApps()
+                } label: {
+                    Label("Refresh", systemImage: "arrow.clockwise")
+                }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderless)
+                .help("Refresh")
+            }
+            .padding()
 
-            List {
-                ForEach(runningAppsViewModel.runningApps) { app in
+            Divider()
+
+            if runningAppsViewModel.runningApps.isEmpty {
+                ContentUnavailableView("No Running Apps", systemImage: "macwindow", description: Text("Open the apps you want to stage, then refresh."))
+            } else {
+                List(runningAppsViewModel.runningApps) { app in
                     HStack {
                         Image(nsImage: app.icon)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 32, height: 32)
+                            .frame(width: 28, height: 28)
+                            .accessibilityHidden(true)
                         Text(app.name)
                         Spacer()
-                        // Only show Add button if the app isn't already managed
-                        if !contentViewModel.isAppManaged(bundleIdentifier: app.bundleIdentifier) {
+                        if contentViewModel.isAppManaged(bundleIdentifier: app.bundleIdentifier) {
+                            Label("Added", systemImage: "checkmark")
+                                .foregroundStyle(.secondary)
+                        } else {
                             Button("Add") {
                                 contentViewModel.addApplication(from: app.url)
                             }
-                            .buttonStyle(.bordered)
-                        } else {
-                            Text("Added")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            .accessibilityLabel("Add \(app.name)")
                         }
                     }
+                    .padding(.vertical, 2)
                 }
+                .listStyle(.inset)
             }
 
             Divider()
 
             HStack {
                 Spacer()
-                Button("Cancel") {
-                    dismiss()
-                }
-                .keyboardShortcut(.cancelAction)
-                Button("Refresh List") {
-                    runningAppsViewModel.fetchRunningApps()
-                }
+                Button("Done") { dismiss() }
+                    .keyboardShortcut(.defaultAction)
             }
             .padding()
         }
-        .frame(minWidth: 400, minHeight: 400)
+        .frame(width: 420, height: 460)
         .onAppear {
-            // Fetch apps when the sheet appears
             runningAppsViewModel.fetchRunningApps()
         }
     }
 }
 
-// Preview
 #Preview {
-    // Need to inject a ContentViewModel
     let appStore = ManagedAppStore()
-    // Add a dummy app to check the 'Added' state
     appStore.managedApps.append(ManagedApp.new(name: "Dummy", bundleIdentifier: "com.apple.finder", bookmark: nil, category: "Other"))
-    let contentViewModel = ContentViewModel(appStore: appStore)
-
-    return RunningAppsSheet(contentViewModel: contentViewModel)
+    return RunningAppsSheet(contentViewModel: ContentViewModel(appStore: appStore))
 }

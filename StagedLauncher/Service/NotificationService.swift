@@ -28,8 +28,8 @@ struct NotificationService {
     /// Schedules a notification for a launching app
     func scheduleLaunchNotification(for app: ManagedApp) {
         let content = UNMutableNotificationContent()
-        content.title = "Staged App Launched"
-        content.body = "\(app.name) is launched after its delay."
+        content.title = app.name
+        content.body = String(localized: "Launched \(ManagedApp.formatDelay(app.delaySeconds)) after login.")
 
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
         center.add(request) { error in

@@ -1,67 +1,68 @@
 import SwiftUI
 
 struct SettingsView: View {
-    // Use AppStorage to bind the UI toggle state to UserDefaults
-    // The source of truth for the actual menu bar state is now handled explicitly
-    @AppStorage(Constants.showMenuBarIconKey) private var showMenuBarIcon: Bool = UserDefaults.standard.bool(
-        forKey: Constants.showMenuBarIconKey
-    )
-    @AppStorage(Constants.enableNotificationsKey) private var enableNotifications: Bool = false
-    @AppStorage(Constants.enabledQuitSelfKey) private var enabledQuitSelf: Bool = UserDefaults.standard.bool(forKey: Constants.enabledQuitSelfKey)
+    @AppStorage(Constants.showMenuBarIconKey) private var showMenuBarIcon = false
+    @AppStorage(Constants.enableNotificationsKey) private var enableNotifications = false
+    @AppStorage(Constants.enabledQuitSelfKey) private var enabledQuitSelf = false
 
-    // Controller for managing login item status
-    @StateObject private var loginItemService = LoginItemService.shared
-    private let defaults: UserDefaults
-
-    init(defaults: UserDefaults = .standard) {
-        self.defaults = defaults
-    }
+    @ObservedObject private var loginItemService = LoginItemService.shared
 
     var body: some View {
-        TabView {
-            // General Settings Tab
-            Form { // Keep the Form for layout within the tab
-                Toggle("Launch at Login", isOn: $loginItemService.launchAtLoginEnabled)
-                    .onChange(of: loginItemService.launchAtLoginEnabled) { _, _ in
-                        loginItemService.toggleLaunchAtLogin()
-                    }
-                    .help("When on, Staged Launcher will be added to your macOS Login Items and launch at each login.")
-                    .toggleStyle(.checkbox)
+        Form {
+            Section {
+                Toggle("Launch at login", isOn: Binding(
+                    get: { loginItemService.isEnabled },
+                    set: { loginItemService.setEnabled($0) }
+                ))
+                if loginItemService.status == .requiresApproval {
+                    approvalNote
+                }
+                if let error = loginItemService.lastError {
+                    Text(error)
+                        .font(.callout)
+                        .foregroundStyle(.red)
+                }
+                Toggle("Quit after all apps have launched", isOn: $enabledQuitSelf)
+            } footer: {
+                Text("Staged Launcher needs to start at login to launch your apps on schedule.")
+                    .settingsFooter()
+            }
 
-                Divider()
-
-                // Menu Bar Icon Toggle
-                Toggle("Show Menu Bar Icon", isOn: $showMenuBarIcon)
+            Section {
+                Toggle("Show in menu bar instead of Dock", isOn: $showMenuBarIcon)
                     .onChange(of: showMenuBarIcon) { _, newValue in
-                        self.defaults.set(newValue, forKey: Constants.showMenuBarIconKey)
                         MenuBarService.shared.updateMenuBarIconVisibility(shouldShow: newValue)
                     }
-                    .help("When enabled, hides the Dock icon and places Staged Launcher in the menu bar; disable to restore the Dock icon.")
-                    .toggleStyle(.checkbox)
-
-                Toggle("Show App Launch Notifications", isOn: $enableNotifications)
+                Toggle("Notify when an app launches", isOn: $enableNotifications)
                     .onChange(of: enableNotifications) { _, newValue in
                         if newValue {
                             NotificationService.shared.requestAuthorizationIfNeeded()
-                        } else {
-                            Logger.info("Notifications disabled by user setting.")
                         }
                     }
-                    .help("When on, you’ll get a notification in Notification Center after delayed app launched.")
-                    .toggleStyle(.checkbox)
+            }
+        }
+        .formStyle(.grouped)
+        .frame(width: 420)
+        .fixedSize(horizontal: false, vertical: true)
+        .onAppear { loginItemService.refresh() }
+    }
 
-                Toggle("Quit When All Apps Have Launched", isOn: $enabledQuitSelf)
-                    .onChange(of: enabledQuitSelf) { _, newValue in
-                        self.defaults.set(newValue, forKey: Constants.enabledQuitSelfKey)
-                    }
-                    .help("When enabled, Staged Launcher will automatically quit itself once all selected apps have finished launching.")
-                    .toggleStyle(.checkbox)
-            }
-            .tabItem {
-                Label("General", systemImage: "gear")
-            }
-            .padding(20) // Add padding around the Form content inside the tab
-        } // End TabView
-        .frame(minWidth: 220, idealWidth: 260, maxWidth: 300, minHeight: 120, idealHeight: 140, maxHeight: 160)
+    private var approvalNote: some View {
+        HStack {
+            Label("Needs approval in System Settings", systemImage: "exclamationmark.triangle.fill")
+                .font(.callout)
+                .foregroundStyle(.secondary)
+                .symbolRenderingMode(.multicolor)
+            Spacer()
+            Button("Open Login Items…") { loginItemService.openSystemSettings() }
+        }
+    }
+}
+
+private extension View {
+    func settingsFooter() -> some View {
+        font(.footnote)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

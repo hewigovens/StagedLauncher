@@ -22,8 +22,12 @@ enum Constants {
     /// UserDefaults key for storing the notification preference.
     static let enableNotificationsKey = "enableLaunchNotifications"
 
+    /// UserDefaults key for quitting after all staged launches finish.
     static let enabledQuitSelfKey = "enableQuitSelf"
-    
+
+    /// Scene identifier of the main window.
+    static let mainWindowID = "main"
+
     static let sponsorLink = "https://github.com/sponsors/hewigovens?frequency=one-time"
     
     static let githubLink = "https://github.com/hewigovens/StagedLauncher"

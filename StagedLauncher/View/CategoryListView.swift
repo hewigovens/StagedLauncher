@@ -1,33 +1,22 @@
-import LSAppCategory
 import SwiftUI
 
 struct CategoryListView: View {
     @ObservedObject var viewModel: ContentViewModel
 
     var body: some View {
-        ZStack {
-            VisualEffectView(material: .sidebar)
-                .ignoresSafeArea()
-            List(selection: $viewModel.selectedCategory) {
+        List(selection: $viewModel.selectedCategory) {
+            Section("Categories") {
                 ForEach(viewModel.categories, id: \.self) { category in
-                    HStack {
-                        Text(emojiForCategory(category))
-                        Text(viewModel.formatCategoryName(category))
-                        Spacer()
-                    }
+                    Label(
+                        viewModel.formatCategoryName(category),
+                        systemImage: viewModel.symbolName(forCategory: category)
+                    )
+                    .badge(viewModel.appCount(in: category))
                     .tag(category as String?)
                 }
             }
-            .listStyle(.sidebar)
-            .background(.clear)
         }
-        .navigationTitle("Categories")
-    }
-
-    private func emojiForCategory(_ category: String) -> String {
-        if category == Constants.categoryAllApps {
-            return "🌐"
-        }
-        return AppCategory(string: category).emoji
+        .listStyle(.sidebar)
+        .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 280)
     }
 }

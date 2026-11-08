@@ -2,33 +2,18 @@ import SwiftUI
 
 @main
 struct StagedLauncherApp: App {
-    // Inject the App Delegate
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    // Centralized coordinator for the entire application
     @StateObject private var appCoordinator = AppCoordinator()
 
     var body: some Scene {
-        WindowGroup {
-            // Pass dependencies from AppCoordinator to ContentView
-            ContentView(appStore: appCoordinator.appStore, viewModel: appCoordinator.viewModel)
-                .environmentObject(appCoordinator.launchCoordinator)
-                .frame(minWidth: 480, minHeight: 300)
+        Window("Staged Launcher", id: Constants.mainWindowID) {
+            ContentView(viewModel: appCoordinator.viewModel)
+                .frame(minWidth: 560, minHeight: 320)
         }
+        .defaultSize(width: 720, height: 460)
+
         Settings {
-            // Pass dependencies from AppCoordinator to SettingsView
             SettingsView()
-                .environmentObject(appCoordinator.appStore)
-                .environmentObject(appCoordinator.launchCoordinator)
-                .navigationTitle("Preferences")
-        }
-        .windowStyle(.automatic)
-        .commands {
-            CommandGroup(after: .appInfo) {
-                Button("Check for Updates...") {
-                    // Use the coordinator to check for updates
-                    appCoordinator.checkForUpdates()
-                }
-            }
         }
     }
 }
