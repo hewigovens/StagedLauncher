@@ -16,6 +16,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
+    /// SwiftUI quits the app when a lone `Window` scene closes. Staged launches are
+    /// still pending then, so keep running; the Dock icon or menu bar item reopens it.
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
+    }
+
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         true
     }

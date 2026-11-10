@@ -32,36 +32,33 @@ struct ContentView: View {
 
     // MARK: - Detail
 
-    @ViewBuilder
+    /// The list stays the detail root even when empty: a non-scrolling root is sized
+    /// to its content, which leaves the footer floating mid-window.
     private var detail: some View {
-        if viewModel.filteredApps.isEmpty {
-            ContentUnavailableView {
-                Label("No Apps Yet", systemImage: "clock.arrow.circlepath")
-            } description: {
-                Text("Add apps to launch them a little while after you log in, instead of all at once.")
-            } actions: {
-                Button("Add App…") { viewModel.presentOpenPanel() }
-                    .buttonStyle(.borderedProminent)
-                Button("Add from Running Apps…") { showingRunningAppsSheet = true }
+        List(selection: $selectedAppIDs) {
+            ForEach(viewModel.filteredApps) { app in
+                ManagedAppCell(app: viewModel.binding(for: app), viewModel: viewModel)
+                    .tag(app.id)
             }
-        } else {
-            List(selection: $selectedAppIDs) {
-                ForEach(viewModel.filteredApps) { app in
-                    ManagedAppCell(app: viewModel.binding(for: app), viewModel: viewModel)
-                        .tag(app.id)
-                }
+        }
+        .listStyle(.inset)
+        .contextMenu(forSelectionType: ManagedApp.ID.self) { ids in
+            if ids.count == 1, let app = viewModel.filteredApps.first(where: { ids.contains($0.id) }) {
+                Button("Show in Finder") { viewModel.revealInFinder(app) }
+                Divider()
             }
-            .listStyle(.inset)
-            .contextMenu(forSelectionType: ManagedApp.ID.self) { ids in
-                if ids.count == 1, let app = viewModel.filteredApps.first(where: { ids.contains($0.id) }) {
-                    Button("Show in Finder") { viewModel.revealInFinder(app) }
-                    Divider()
-                }
-                if !ids.isEmpty {
-                    Button("Remove", role: .destructive) { remove(ids) }
-                }
+            if !ids.isEmpty {
+                Button("Remove", role: .destructive) { remove(ids) }
             }
-            .onDeleteCommand { remove(selectedAppIDs) }
+        }
+        .onDeleteCommand { remove(selectedAppIDs) }
+        .overlay {
+            if viewModel.filteredApps.isEmpty {
+                EmptyStateView(
+                    addApp: viewModel.presentOpenPanel,
+                    addFromRunningApps: { showingRunningAppsSheet = true }
+                )
+            }
         }
     }
 
