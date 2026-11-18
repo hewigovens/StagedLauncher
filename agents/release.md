@@ -3,7 +3,7 @@
 Load this file before version bumps, packaging, GitHub releases, or Homebrew tap updates.
 
 Releases are a notarized `Staged.Launcher.zip` attached to a GitHub release, plus a
-cask bump in the Homebrew tap ([hewigovens/tap](https://github.com/hewigovens/tap),
+cask bump in the Homebrew tap ([hewigovens/homebrew-tap](https://github.com/hewigovens/homebrew-tap),
 checked out next to this repository as `../tap`). Tags are the bare version, e.g. `1.0.3`.
 
 1. **Bump the version.** Set `MARKETING_VERSION` and increment `CURRENT_PROJECT_VERSION`
